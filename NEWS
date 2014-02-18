@@ -1,0 +1,95 @@
+tableone 0.3.2 (2014-02-18)
+----------------------------------------------------------------
+
+BUG FIXES
+
+* DESCRIPTION changed for clarity. No functional changes.
+
+
+tableone 0.3.1 (2014-02-18)
+----------------------------------------------------------------
+
+BUG FIXES
+
+* NAMESPACE now includes import(e1071) and import(gmodels).
+
+* DESCRIPTION now includes Imports e1071, gmodels and
+  Suggests survival, instead of Depends...
+
+
+tableone 0.3.0 (2014-02-17)
+----------------------------------------------------------------
+NEW FEATURES
+
+* CreateTableOne has a new factorVars argument, a character
+  vector specifying numerically coded variables that should be
+  treated as factors.
+
+* The print method for the TableOne/CatTable class object has a
+  new minMax argument, a logical value specifying whether to show
+  median [min, max] instead of median [IQR] for nonnormal variables
+
+* The print method for the TableOne/CatTable class object has a
+  new cramVars argument, a character vector to specify which
+  2-level factors to should have both levels presented in one row.
+
+
+BUG FIXES
+
+* Documentations were fixed to represent the current version.
+
+
+tableone 0.2.1 (2014-02-15)
+----------------------------------------------------------------
+BUG FIXES
+
+* Documentations were fixed to represent the current version.
+
+
+tableone 0.2.0 (2014-02-14)
+----------------------------------------------------------------
+NEW FEATURES
+
+* CreateTableOne and related print/summary methods were added.
+
+* CreateTableOne can crate a table with both categorical and
+  continuous variables.
+
+* The print method can suppress printing by printToggle option.
+
+BUG FIXES
+
+* In the Roxygen part of the code, only at_export followed by nothing is used.
+
+
+tableone 0.1.2 (2014-02-09)
+----------------------------------------------------------------
+BUG FIXES
+
+* Fixed incorrect specification of S3 method export.
+
+* To make an object an S3 method and export it both at_S3method and at_export
+  tags are needed in the Roxygen part of the code.
+
+* Passed all the default tests by R CMD check file.tar.gz
+
+
+tableone 0.1.1 (2014-02-09)
+----------------------------------------------------------------
+BUG FIXES
+
+* This version is to better conform to the CRAN standards.
+
+* Documents are now included in 
+
+
+tableone 0.1.0 (2014-02-08)
+----------------------------------------------------------------
+FIRST DEVELOPMENTAL VERSION
+
+* This is the first developmental version to be made public.
+
+* tableone makes creation of "Table 1", description of baseline characteristics
+  common in medical research papers easy.
+
+################################################################################

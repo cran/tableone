@@ -1,0 +1,58 @@
+\name{ShowRegTable}
+\alias{ShowRegTable}
+\title{Format regression results in medically decent format}
+\usage{
+ShowRegTable(model, exp = TRUE, digits = 2, pDigits = 3, quote = FALSE)
+}
+\arguments{
+  \item{model}{Regression model result objects that have
+  the summary and confint methods.}
+
+  \item{exp}{TRUE by default. You need to specify exp =
+  FALSE if your model is has the indentity link function
+  (linear regression, etc).}
+
+  \item{digits}{Number of digits to print for the main
+  part.}
+
+  \item{pDigits}{Number of digits to print for the
+  p-values.}
+
+  \item{quote}{Whether to show everything in quotes. The
+  default is FALSE. If TRUE, everything including the row
+  and column names are quoted so that you can copy it to
+  Excel easily.}
+}
+\value{
+A matrix containing what you see is returned invisibly. You
+can capture it by assignment to an object.
+}
+\description{
+It shows the regression result in the HR [95\% CI] p-value
+format, which is usually the form used in medical research
+papers.
+}
+\examples{
+## Load
+library(tableone)
+
+## Load Mayo Clinic Primary Biliary Cirrhosis Data
+library(survival)
+data(pbc)
+## Check variables
+head(pbc)
+
+## Fit a Cox regression model
+objCoxph <- coxph(formula = Surv(time, status == 2) ~ trt + age + albumin + ascites,
+                  data    = pbc)
+
+## Show the simple table
+ShowRegTable(objCoxph)
+
+## Show with quote to ease copy and paste
+ShowRegTable(objCoxph, quote = TRUE)
+}
+\author{
+Kazuki Yoshida
+}
+
