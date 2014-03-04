@@ -1,11 +1,11 @@
-b22ea4947aae7a7d86216ca94fe22a6c *DESCRIPTION
+b07b2658c8c5d60086604d564165077c *DESCRIPTION
 66ddf6c95b432ced1401f728f2138b89 *NAMESPACE
-cef8a321c01efe782e3a6cc53c13eafb *NEWS
-877d44d84e2ab172064a905eea7db5cb *R/CreateCatTable.R
-a3d3596fa5d4967bb0884322247e6738 *R/CreateContTable.R
-3fbc126b4839d96b1770fe1c69e04279 *R/CreateTableOne.R
+dfe03b41cedff78c9ab72cc33651fe36 *NEWS
+f1fcf5e24b604ac291d7621b7f03e746 *R/CreateCatTable.R
+75a97751d6f7358198f5f17d57b68b40 *R/CreateContTable.R
+d94ed1e5052dffcaf0a84cca315e9a3f *R/CreateTableOne.R
 aee5ecc2742cbeb87aaa10c5961c30b6 *R/ShowRegTable.R
-7a42dbd00c5d592d8b1f547c43bb5726 *R/modules.R
+7eaa5a21d69fb70e50da1068b7ed64ae *R/modules.R
 942262eb37484a69cc50c34dd19b22fd *R/print.CatTable.R
 cf54a1b8fc0c9549c5d77b99601a4bc5 *R/print.ContTable.R
 95f8ddc64bf0e48c834a35bdbd9524c1 *R/print.TableOne.R
