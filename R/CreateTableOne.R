@@ -118,14 +118,25 @@ CreateTableOne <-
         test <- ModuleReturnFalseIfNoStrata(strata, test)
 
         ## Get the classes of the variables
-        varClasses  <- sapply(data[vars], class)
-        varFactors  <- names(varClasses[varClasses == "factor"  | varClasses == "logical" | varClasses == "character"])
-        varNumerics <- names(varClasses[varClasses == "numeric" | varClasses == "integer"])
+        varClasses  <- lapply(data[vars], class)
+
+        ## Classify as varFactors if any one of these classes are contained
+        varFactors <-sapply(varClasses, function(VEC) {
+            any(VEC %in% c("factor", "ordered", "logical", "character"))
+        })
+        varFactors <- names(varFactors)[varFactors]
+
+        ## Classify as varNumerics if any one of these classes are contained
+        varNumerics <-sapply(varClasses, function(VEC) {
+            any(VEC %in% c("numeric", "integer"))
+        })
+        varNumerics <- names(varNumerics)[varNumerics]
 
         ## Drop variables that do not meet either because it is unsupported
         varDrop <- setdiff(vars, c(varFactors, varNumerics))
         if (length(varDrop) > 0) {
-            warning("Dropping variable(s) ", varDrop, " due to unsupported class.\n")
+            warning("Dropping variable(s) ", paste0(varDrop, sep = " "),
+                    " due to unsupported class.\n")
             vars <- setdiff(vars, varDrop)
         }
 
