@@ -1,11 +1,11 @@
-145f1bb2e1ca2910dd28349b0c667df6 *DESCRIPTION
+1385eae7a8c18069311ac45138292dc2 *DESCRIPTION
 649932429f34b5b3bd004ce6b751b8c8 *NAMESPACE
-2ce41be57de03f36d2df43055b3b15a0 *NEWS
-af9b269a39faf87c31058e06aec80535 *R/CreateCatTable.R
+18d68355540db01d7f89f3ea89194578 *NEWS
+7260c98fff87b8f097b626436f13474b *R/CreateCatTable.R
 9a6ba988f11453c5f4cdbc9ea9eb478f *R/CreateContTable.R
 2a122dfa335b25bdfcacd8ba437c4a1e *R/CreateTableOne.R
 fba2249bbd3588fe828f519885fc30f4 *R/ShowRegTable.R
-d5cded23e553f37b163f30d05db8718f *R/modules.R
+5a8da604f7ff8ceb42d6c2beeb2336ee *R/modules.R
 c9b0faef317fadf09f35529afc3fae74 *R/print.CatTable.R
 b258be6e4b7cc2f608f32643281ae23a *R/print.ContTable.R
 aee01fac1ae77de5167e8783516497cf *R/print.TableOne.R
@@ -24,3 +24,6 @@ ed867d4bc0874cc22e54c6d42d5c73a9 *man/print.TableOne.Rd
 dce12840569bc9ad57eac7abc955aaca *man/summary.ContTable.Rd
 bcb3895640fe7454a5300d9fffabadc2 *man/summary.TableOne.Rd
 5627e149b31c87cd5f2734fea84d306c *man/tableone-package.Rd
+83f11ecda6ce99b95c941f4fdfd50fce *tests/test-all.R
+0598c7d6e90198c6da04581aec4a3021 *tests/testthat/test-CreateTableOne.R
+d117ff9e92890050f1894a5d571e6f5a *tests/testthat/test-modules.R
