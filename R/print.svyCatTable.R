@@ -1,8 +1,8 @@
-##' Format and print \code{CatTable} class objects
+##' Format and print \code{svyCatTable} class objects
 ##'
-##' \code{print} method for the \code{CatTable} class objects created by \code{\link{CreateCatTable}} function.
+##' \code{print} method for the \code{svyCatTable} class objects created by \code{\link{svyCreateCatTable}} function.
 ##'
-##' @param x Object returned by \code{\link{CreateCatTable}} function.
+##' @param x The result of a call to the \code{\link{svyCreateCatTable}} function.
 ##' @param digits Number of digits to print in the table.
 ##' @param pDigits Number of digits to print for p-values (also used for standardized mean differences).
 ##' @param quote Whether to show everything in quotes. The default is FALSE. If TRUE, everything including the row and column names are quoted so that you can copy it to Excel easily.
@@ -14,75 +14,20 @@
 ##' @param showAllLevels Whether to show all levels. FALSE by default, i.e., for 2-level categorical variables, only the higher level is shown to avoid redundant information.
 ##' @param cramVars A character vector to specify the two-level categorical variables, for which both levels should be shown in one row.
 ##' @param test Whether to show p-values. TRUE by default. If FALSE, only the numerical summaries are shown.
-##' @param exact A character vector to specify the variables for which the p-values should be those of exact tests. By default all p-values are from large sample approximation tests (chisq.test).
+##' @param exact This option is not available for tables from weighted data.
 ##' @param smd Whether to show standardized mean differences. FALSE by default. If there are more than one contrasts, the average of all possible standardized mean differences is shown. For individual contrasts, use \code{summary}.
 ##' @param CrossTable Whether to show the cross table objects held internally using gmodels::CrossTable function. This will give an output similar to the PROC FREQ in SAS.
 ##' @param ... For compatibility with generic. Ignored.
 ##' @return A matrix object containing what you see is also invisibly returned. This can be assinged a name and exported via \code{write.csv}.
 ##' @author Kazuki Yoshida
 ##' @seealso
-##' \code{\link{CreateTableOne}}, \code{\link{CreateCatTable}}, \code{\link{summary.CatTable}}
+##' \code{\link{svyCreateTableOne}}, \code{\link{svyCreateCatTable}}, \code{\link{summary.svyCatTable}}
 ##' @examples
 ##'
-##' ## Load
-##' library(tableone)
-##'
-##' ## Load Mayo Clinic Primary Biliary Cirrhosis Data
-##' library(survival)
-##' data(pbc)
-##' ## Check variables
-##' head(pbc)
-##'
-##' ## Create an overall table for categorical variables
-##' catVars <- c("status","ascites","hepato","spiders","edema","stage")
-##' catTableOverall <- CreateCatTable(vars = catVars, data = pbc)
-##'
-##' ## Simply typing the object name will invoke the print.CatTable method,
-##' ## which will show the sample size, frequencies and percentages.
-##' ## For 2-level variables, only the higher level is shown for simplicity.
-##' catTableOverall
-##'
-##' ## If you need to show both levels for some 2-level factors, use cramVars
-##' print(catTableOverall, cramVars = "hepato")
-##'
-##' ## Use the showAllLevels argument to see all levels for all variables.
-##' print(catTableOverall, showAllLevels = TRUE)
-##'
-##' ## You can choose form frequencies ("f") and/or percentages ("p") or both.
-##' ## "fp" frequency (percentage) is the default. Row names change accordingly.
-##' print(catTableOverall, format = "f")
-##' print(catTableOverall, format = "p")
-##'
-##' ## To further examine the variables, use the summary.CatTable method,
-##' ## which will show more details.
-##' summary(catTableOverall)
-##'
-##' ## The table can be stratified by one or more variables
-##' catTableBySexTrt <- CreateCatTable(vars = catVars,
-##'                                    strata = c("sex","trt"), data = pbc)
-##'
-##' ## print now includes p-values which are by default calculated by chisq.test.
-##' ## It is formatted at the decimal place specified by the pDigits argument
-##' ## (3 by default). It does <0.001 for you.
-##' catTableBySexTrt
-##'
-##' ## The exact argument toggles the p-values to the exact test result from
-##' ## fisher.test. It will show which ones are from exact tests.
-##' print(catTableBySexTrt, exact = "ascites")
-##'
-##' ## summary now includes both types of p-values
-##' summary(catTableBySexTrt)
-##'
-##' ## If your work flow includes copying to Excel and Word when writing manuscripts,
-##' ## you may benefit from the quote argument. This will quote everything so that
-##' ## Excel does not mess up the cells.
-##' print(catTableBySexTrt, exact = "ascites", quote = TRUE)
-##'
-##' ## If you want to center-align values in Word, use noSpaces option.
-##' print(catTableBySexTrt, exact = "ascites", quote = TRUE, noSpaces = TRUE)
+##' ## See the examples for svyCreateTableOne()
 ##'
 ##' @export
-print.CatTable <-
+print.svyCatTable <-
 function(x,                        # CatTable object
          digits = 1, pDigits = 3,  # Number of digits to show
          quote         = FALSE,    # Whether to show quotes
@@ -145,7 +90,9 @@ function(x,                        # CatTable object
                           ## Pick the first non-null element
                           n[!is.null(n)][1]
                           ## Convert NULL to 0
-                          ifelse(is.null(n), "0", as.character(n))
+                          ifelse(is.null(n),
+                                 "0",
+                                 sprintf(fmt = paste0("%.", digits, "f"), n))
                       },
                       simplify = TRUE) # vector with as many elements as strata
 
@@ -153,8 +100,7 @@ function(x,                        # CatTable object
 ### Formatting for printing
 
     ## Variables to format using digits option
-    ## Full list c("n","miss","p.miss","freq","percent","cum.percent")
-    varsToFormat <- c("p.miss","percent","cum.percent")
+    varsToFormat <- c("n","miss","p.miss","freq","percent","cum.percent")
 
     ## Obtain collpased result by looping over strata
     ## within each stratum, loop over variables
@@ -214,12 +160,11 @@ function(x,                        # CatTable object
     ## Set the variables names
     rownames(out) <- CatTableCollapsed[[posFirstNonNullElement]][,"var"]
     ## Get positions of rows with variable names
-    ## Used for adding p values in place
     logiNonEmptyRowNames <- CatTableCollapsed[[posFirstNonNullElement]][, "firstRowInd"] != ""
 
 
     ## Add p-values when requested and available
-    if (test & !is.null(attr(CatTable, "pValues"))) {
+    if (test == TRUE & !is.null(attr(CatTable, "pValues"))) {
 
         ## Pick test types used (used for annonation)
         testTypes <- c("","exact")[exact]
@@ -231,7 +176,7 @@ function(x,                        # CatTable object
 
         ## Create an empty p-value column and test column
         out <- cbind(out,
-                     p = rep("", nrow(out))) # Column for p-values
+                     p     = rep("", nrow(out))) # Column for p-values
         ## Put the values at the non-empty positions
         out[logiNonEmptyRowNames,"p"] <- pVec
 
@@ -252,8 +197,7 @@ function(x,                        # CatTable object
                      SMD = rep("", nrow(out))) # Column for p-values
         ## Put the values at the non-empty positions
         out[logiNonEmptyRowNames,"SMD"] <-
-        ModuleFormatPValues(attr(CatTable, "smd")[,1],
-                            pDigits = pDigits)
+        ModuleFormatPValues(attr(CatTable, "smd")[,1], pDigits = pDigits)
     }
 
 
@@ -285,7 +229,8 @@ function(x,                        # CatTable object
     }
 
     ## Add stratification information to the column header depending on the dimension
-    names(dimnames(out)) <- ModuleReturnDimHeaders(CatTable)
+    names(dimnames(out)) <- c("", paste0("Stratified by ",
+                                         attr(CatTable, "strataVarName")))
 
     ## Remove spaces if asked.
     out <- ModuleRemoveSpaces(mat = out, noSpaces = noSpaces)

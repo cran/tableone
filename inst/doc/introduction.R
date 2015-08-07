@@ -1,4 +1,4 @@
-## ----, message = FALSE, tidy = FALSE, echo = F--------------------------------------------------------------------
+## ---- message = FALSE, tidy = FALSE, echo = F---------------------------------------------------------------------
 ## Create a header using devtools::use_vignette("my-vignette")
 ## knitr configuration: http://yihui.name/knitr/options#chunk_options
 library(knitr)
@@ -53,12 +53,12 @@ tab3 <- CreateTableOne(vars = myVars, strata = "trt" , data = pbc, factorVars = 
 tab3
 
 ## -----------------------------------------------------------------------------------------------------------------
-print(tab3, nonnormal = biomarkers, exact = "stage")
+print(tab3, nonnormal = biomarkers, exact = "stage", smd = TRUE)
 
 ## -----------------------------------------------------------------------------------------------------------------
 print(tab3, nonnormal = biomarkers, exact = "stage", quote = TRUE, noSpaces = TRUE)
 
-## ----, eval = FALSE-----------------------------------------------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------------------------------------------
 #  tab3Mat <- print(tab3, nonnormal = biomarkers, exact = "stage", quote = FALSE, noSpaces = TRUE, printToggle = FALSE)
 #  ## Save to a CSV file
 #  write.csv(tab3Mat, file = "myTable.csv")

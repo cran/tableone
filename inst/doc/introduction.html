@@ -227,7 +227,7 @@ data(pbc)
 
 <pre><code>
                        Overall          
-  n                     418             
+  n                        418          
   id (mean (sd))        209.50 (120.81) 
   time (mean (sd))     1917.78 (1104.67)
   status (mean (sd))      0.83 (0.96)   
@@ -281,7 +281,7 @@ tab2 &lt;- CreateTableOne(vars = myVars, data = pbc, factorVars = catVars)
 
 <pre><code>
                        Overall          
-  n                    418              
+  n                        418          
   time (mean (sd))     1917.78 (1104.67)
   status (%)                            
      0                     232 (55.5)   
@@ -290,7 +290,7 @@ tab2 &lt;- CreateTableOne(vars = myVars, data = pbc, factorVars = catVars)
   trt = 2 (%)              154 (49.4)   
   age (mean (sd))        50.74 (10.45)  
   sex = f (%)              374 (89.5)   
-  ascites = 1 (%)           24 (7.7)    
+  ascites = 1 (%)           24 ( 7.7)   
   hepato = 1 (%)           160 (51.3)   
   spiders = 1 (%)           90 (28.8)   
   edema (%)                             
@@ -322,7 +322,7 @@ tab2 &lt;- CreateTableOne(vars = myVars, data = pbc, factorVars = catVars)
 
 <pre><code>
                        level Overall          
-  n                          418              
+  n                              418          
   time (mean (sd))           1917.78 (1104.67)
   status (%)           0         232 (55.5)   
                        1          25 ( 6.0)   
@@ -426,7 +426,7 @@ print(tab2, nonnormal = biomarkers)
 
 <pre><code>
                           Overall                  
-  n                       418                      
+  n                           418                  
   time (mean (sd))        1917.78 (1104.67)        
   status (%)                                       
      0                        232 (55.5)           
@@ -435,7 +435,7 @@ print(tab2, nonnormal = biomarkers)
   trt = 2 (%)                 154 (49.4)           
   age (mean (sd))           50.74 (10.45)          
   sex = f (%)                 374 (89.5)           
-  ascites = 1 (%)              24 (7.7)            
+  ascites = 1 (%)              24 ( 7.7)           
   hepato = 1 (%)              160 (51.3)           
   spiders = 1 (%)              90 (28.8)           
   edema (%)                                        
@@ -472,22 +472,22 @@ tab3
 
 <pre><code>                      Stratified by trt
                        1                 2                 p      test
-  n                    158               154                          
+  n                        158               154                      
   time (mean (sd))     2015.62 (1094.12) 1996.86 (1155.93)  0.883     
   status (%)                                                0.894     
-     0                      83 (52.5)         85 (55.2)               
-     1                      10 ( 6.3)          9 ( 5.8)               
-     2                      65 (41.1)         60 (39.0)               
-  trt = 2 (%)                0 (0.0)         154 (100.0)   &lt;0.001     
+     0                      83 (52.5)         85 ( 55.2)              
+     1                      10 ( 6.3)          9 (  5.8)              
+     2                      65 (41.1)         60 ( 39.0)              
+  trt = 2 (%)                0 ( 0.0)        154 (100.0)   &lt;0.001     
   age (mean (sd))        51.42 (11.01)     48.58 (9.96)     0.018     
-  sex = f (%)              137 (86.7)        139 (90.3)     0.421     
-  ascites = 1 (%)           14 (8.9)          10 (6.5)      0.567     
-  hepato = 1 (%)            73 (46.2)         87 (56.5)     0.088     
-  spiders = 1 (%)           45 (28.5)         45 (29.2)     0.985     
+  sex = f (%)              137 (86.7)        139 ( 90.3)    0.421     
+  ascites = 1 (%)           14 ( 8.9)         10 (  6.5)    0.567     
+  hepato = 1 (%)            73 (46.2)         87 ( 56.5)    0.088     
+  spiders = 1 (%)           45 (28.5)         45 ( 29.2)    0.985     
   edema (%)                                                 0.877     
-     0                     132 (83.5)        131 (85.1)               
-     0.5                    16 (10.1)         13 ( 8.4)               
-     1                      10 ( 6.3)         10 ( 6.5)               
+     0                     132 (83.5)        131 ( 85.1)              
+     0.5                    16 (10.1)         13 (  8.4)              
+     1                      10 ( 6.3)         10 (  6.5)              
   bili (mean (sd))        2.87 (3.63)       3.65 (5.28)     0.131     
   chol (mean (sd))      365.01 (209.54)   373.88 (252.48)   0.748     
   albumin (mean (sd))     3.52 (0.44)       3.52 (0.40)     0.874     
@@ -498,10 +498,10 @@ tab3
   platelet (mean (sd))  258.75 (100.32)   265.20 (90.73)    0.555     
   protime (mean (sd))    10.65 (0.85)      10.80 (1.14)     0.197     
   stage (%)                                                 0.201     
-     1                      12 ( 7.6)          4 ( 2.6)               
-     2                      35 (22.2)         32 (20.8)               
-     3                      56 (35.4)         64 (41.6)               
-     4                      55 (34.8)         54 (35.1)               
+     1                      12 ( 7.6)          4 (  2.6)              
+     2                      35 (22.2)         32 ( 20.8)              
+     3                      56 (35.4)         64 ( 41.6)              
+     4                      55 (34.8)         54 ( 35.1)              
 </code></pre>
 
 <h3>Testing</h3>
@@ -510,41 +510,43 @@ tab3
 
 <p>You may be worried about the nonnormal variables and small cell counts in the stage variable. In such a situation, you can use the nonnormal argument like before as well as the exact (test) argument in the print() method. Now kruskal.test() is used for the nonnormal continous variables and fisher.test() is used for categorical variables specified in the exact argument. kruskal.test() is equivalent to wilcox.test() in the two-group case. The column named test is to indicate which p-values were calculated using the non-default tests.</p>
 
-<pre><code class="r">print(tab3, nonnormal = biomarkers, exact = &quot;stage&quot;)
+<p>To also show standardized mean differences, use the smd option.</p>
+
+<pre><code class="r">print(tab3, nonnormal = biomarkers, exact = &quot;stage&quot;, smd = TRUE)
 </code></pre>
 
 <pre><code>                         Stratified by trt
-                          1                         2                         p      test   
-  n                       158                       154                                     
-  time (mean (sd))        2015.62 (1094.12)         1996.86 (1155.93)          0.883        
-  status (%)                                                                   0.894        
-     0                         83 (52.5)                 85 (55.2)                          
-     1                         10 ( 6.3)                  9 ( 5.8)                          
-     2                         65 (41.1)                 60 (39.0)                          
-  trt = 2 (%)                   0 (0.0)                 154 (100.0)           &lt;0.001        
-  age (mean (sd))           51.42 (11.01)             48.58 (9.96)             0.018        
-  sex = f (%)                 137 (86.7)                139 (90.3)             0.421        
-  ascites = 1 (%)              14 (8.9)                  10 (6.5)              0.567        
-  hepato = 1 (%)               73 (46.2)                 87 (56.5)             0.088        
-  spiders = 1 (%)              45 (28.5)                 45 (29.2)             0.985        
-  edema (%)                                                                    0.877        
-     0                        132 (83.5)                131 (85.1)                          
-     0.5                       16 (10.1)                 13 ( 8.4)                          
-     1                         10 ( 6.3)                 10 ( 6.5)                          
-  bili (median [IQR])        1.40 [0.80, 3.20]         1.30 [0.72, 3.60]       0.842 nonnorm
-  chol (median [IQR])      315.50 [247.75, 417.00]   303.50 [254.25, 377.00]   0.544 nonnorm
-  albumin (mean (sd))        3.52 (0.44)               3.52 (0.40)             0.874        
-  copper (median [IQR])     73.00 [40.00, 121.00]     73.00 [43.00, 139.00]    0.717 nonnorm
-  alk.phos (median [IQR]) 1214.50 [840.75, 2028.00] 1283.00 [922.50, 1949.75]  0.812 nonnorm
-  ast (median [IQR])       111.60 [76.73, 151.51]    117.40 [83.78, 151.90]    0.459 nonnorm
-  trig (median [IQR])      106.00 [84.50, 146.00]    113.00 [84.50, 155.00]    0.370 nonnorm
-  platelet (mean (sd))     258.75 (100.32)           265.20 (90.73)            0.555        
-  protime (median [IQR])    10.60 [10.03, 11.00]      10.60 [10.00, 11.40]     0.588 nonnorm
-  stage (%)                                                                    0.205 exact  
-     1                         12 ( 7.6)                  4 ( 2.6)                          
-     2                         35 (22.2)                 32 (20.8)                          
-     3                         56 (35.4)                 64 (41.6)                          
-     4                         55 (34.8)                 54 (35.1)                          
+                          1                         2                         p      test    SMD   
+  n                           158                       154                                        
+  time (mean (sd))        2015.62 (1094.12)         1996.86 (1155.93)          0.883          0.017
+  status (%)                                                                   0.894          0.054
+     0                         83 (52.5)                 85 ( 55.2)                                
+     1                         10 ( 6.3)                  9 (  5.8)                                
+     2                         65 (41.1)                 60 ( 39.0)                                
+  trt = 2 (%)                   0 ( 0.0)                154 (100.0)           &lt;0.001          NaN  
+  age (mean (sd))           51.42 (11.01)             48.58 (9.96)             0.018          0.270
+  sex = f (%)                 137 (86.7)                139 ( 90.3)            0.421          0.111
+  ascites = 1 (%)              14 ( 8.9)                 10 (  6.5)            0.567          0.089
+  hepato = 1 (%)               73 (46.2)                 87 ( 56.5)            0.088          0.207
+  spiders = 1 (%)              45 (28.5)                 45 ( 29.2)            0.985          0.016
+  edema (%)                                                                    0.877          0.058
+     0                        132 (83.5)                131 ( 85.1)                                
+     0.5                       16 (10.1)                 13 (  8.4)                                
+     1                         10 ( 6.3)                 10 (  6.5)                                
+  bili (median [IQR])        1.40 [0.80, 3.20]         1.30 [0.72, 3.60]       0.842 nonnorm  0.171
+  chol (median [IQR])      315.50 [247.75, 417.00]   303.50 [254.25, 377.00]   0.544 nonnorm  0.038
+  albumin (mean (sd))        3.52 (0.44)               3.52 (0.40)             0.874          0.018
+  copper (median [IQR])     73.00 [40.00, 121.00]     73.00 [43.00, 139.00]    0.717 nonnorm &lt;0.001
+  alk.phos (median [IQR]) 1214.50 [840.75, 2028.00] 1283.00 [922.50, 1949.75]  0.812 nonnorm  0.037
+  ast (median [IQR])       111.60 [76.73, 151.51]    117.40 [83.78, 151.90]    0.459 nonnorm  0.084
+  trig (median [IQR])      106.00 [84.50, 146.00]    113.00 [84.50, 155.00]    0.370 nonnorm  0.017
+  platelet (mean (sd))     258.75 (100.32)           265.20 (90.73)            0.555          0.067
+  protime (median [IQR])    10.60 [10.03, 11.00]      10.60 [10.00, 11.40]     0.588 nonnorm  0.146
+  stage (%)                                                                    0.205 exact    0.246
+     1                         12 ( 7.6)                  4 (  2.6)                                
+     2                         35 (22.2)                 32 ( 20.8)                                
+     3                         56 (35.4)                 64 ( 41.6)                                
+     4                         55 (34.8)                 54 ( 35.1)                                
 </code></pre>
 
 <h2>Exporting</h2>
@@ -658,7 +660,7 @@ print(tab3$ContTable, nonnormal = biomarkers)
 
 <ul>
 <li>Authored by Kazuki Yoshida</li>
-<li>CRAN page: <a href="http://cran.r-project.org/web/packages/tableone">http://cran.r-project.org/web/packages/tableone</a></li>
+<li>CRAN page: <a href="http://cran.r-project.org/package=tableone">http://cran.r-project.org/package=tableone</a></li>
 <li>github page: <a href="https://github.com/kaz-yos/tableone">https://github.com/kaz-yos/tableone</a></li>
 </ul>
 

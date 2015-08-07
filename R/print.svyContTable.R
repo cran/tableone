@@ -1,8 +1,8 @@
-##' Format and print \code{ContTable} class objects
+##' Format and print \code{svyContTable} class objects
 ##'
-##' \code{print} method for the \code{ContTable} class objects created by \code{\link{CreateContTable}} function.
+##' \code{print} method for the \code{svyContTable} class objects created by \code{\link{CreateContTable}} function.
 ##'
-##' @param x Object returned by \code{\link{CreateContTable}} function.
+##' @param x Object returned by \code{\link{svyCreateContTable}} function.
 ##' @param digits Number of digits to print in the table.
 ##' @param pDigits Number of digits to print for p-values (also used for standardized mean differences).
 ##' @param quote Whether to show everything in quotes. The default is FALSE. If TRUE, everything including the row and column names are quoted so that you can copy it to Excel easily.
@@ -19,69 +19,13 @@
 ##' @return A matrix object containing what you see is also invisibly returned. This can be assinged a name and exported via \code{write.csv}.
 ##' @author Kazuki Yoshida
 ##' @seealso
-##' \code{\link{CreateTableOne}}, \code{\link{CreateContTable}}, \code{\link{summary.ContTable}}
+##' \code{\link{svyCreateTableOne}}, \code{\link{svyCreateCatTable}}, \code{\link{summary.svyCatTable}}
 ##' @examples
 ##'
-##' ## Load
-##' library(tableone)
-##'
-##' ## Load Mayo Clinic Primary Biliary Cirrhosis Data
-##' library(survival)
-##' data(pbc)
-##' ## Check variables
-##' head(pbc)
-##'
-##' ## Create an overall table for continuous variables
-##' contVars <- c("time","age","bili","chol","albumin","copper",
-##'               "alk.phos","ast","trig","platelet","protime")
-##' contTableOverall <- CreateContTable(vars = contVars, data = pbc)
-##'
-##' ## Simply typing the object name will invoke the print.ContTable method,
-##' ## which will show the sample size, means and standard deviations.
-##' contTableOverall
-##'
-##' ## To further examine the variables, use the summary.ContTable method,
-##' ## which will show more details.
-##' summary(contTableOverall)
-##'
-##' ## c("age","chol","copper","alk.phos","trig","protime") appear highly skewed.
-##' ## Specify them in the nonnormal argument, and the display changes to the median,
-##' ## and the [25th, 75th] percentile.
-##' nonNormalVars <- c("age","chol","copper","alk.phos","trig","protime")
-##' print(contTableOverall, nonnormal = nonNormalVars)
-##'
-##' ## To show median [min,max] for nonnormal variables, use minMax = TRUE
-##' print(contTableOverall, nonnormal = nonNormalVars, minMax = TRUE)
-##'
-##' ## The table can be stratified by one or more variables
-##' contTableBySexTrt <- CreateContTable(vars = contVars,
-##'                                      strata = c("sex","trt"), data = pbc)
-##'
-##' ## print now includes p-values which are by default calculated by oneway.test (t-test
-##' ## equivalent in the two group case). It is formatted at the decimal place specified
-##' ## by the pDigits argument (3 by default). It does <0.001 for you.
-##' contTableBySexTrt
-##'
-##' ## The nonnormal argument toggles the p-values to the nonparametric result from
-##' ## kruskal.test (wilcox.test equivalent for the two group case).
-##' print(contTableBySexTrt, nonnormal = nonNormalVars)
-##'
-##' ## The minMax argument toggles whether to show median [range]
-##' print(contTableBySexTrt, nonnormal = nonNormalVars, minMax = TRUE)
-##'
-##' ## summary now includes both types of p-values
-##' summary(contTableBySexTrt)
-##'
-##' ## If your work flow includes copying to Excel and Word when writing manuscripts,
-##' ## you may benefit from the quote argument. This will quote everything so that
-##' ## Excel does not mess up the cells.
-##' print(contTableBySexTrt, nonnormal = nonNormalVars, quote = TRUE)
-##'
-##' ## If you want to center-align values in Word, use noSpaces option.
-##' print(contTableBySexTrt, nonnormal = nonNormalVars, quote = TRUE, noSpaces = TRUE)
+##' ## See the examples for svyCreateTableOne()
 ##'
 ##' @export
-print.ContTable <-
+print.svyContTable <-
 function(x,                       # ContTable object
          digits = 2, pDigits = 3, # Number of digits to show
          quote        = FALSE,    # Whether to show quotes
@@ -141,7 +85,9 @@ function(x,                       # ContTable object
                           ## Pick the first non-null element
                           n[!is.null(n)][1]
                           ## Convert NULL to 0
-                          ifelse(is.null(n), "0", as.character(n))
+                          ifelse(is.null(n),
+                                 "0",
+                                 sprintf(fmt = paste0("%.", digits, "f"), n))
                       },
                       simplify = TRUE) # vector with as many elements as strata
 
@@ -231,7 +177,6 @@ function(x,                       # ContTable object
     }
 
 
-
     ## Add mean (sd) or median [IQR]/median [range] explanation if requested
     if (explain) {
         ## Create a vector of explanations to be pasted
@@ -259,7 +204,8 @@ function(x,                       # ContTable object
     }
 
     ## Add stratification information to the column header depending on the dimension
-    names(dimnames(out)) <- ModuleReturnDimHeaders(ContTable)
+    names(dimnames(out)) <- c("", paste0("Stratified by ",
+                                         attr(ContTable, "strataVarName")))
 
     ## Remove spaces if asked.
     out <- ModuleRemoveSpaces(mat = out, noSpaces = noSpaces)

@@ -1,26 +1,27 @@
-##' Shows all results in a \code{CatTable} class object
+##' Shows all results in a \code{svyCatTable} class object
 ##'
-##' Shows all data a \code{CatTable} class object has. This includes the (optionally stratified) part with summary statistics and, if available, p-values from the approximation method test (\code{chisq.test} by default) and exact method test (\code{fisher.test} by default) and standardized mean differences of all possible pairwise contrasts.
+##' Shows all data a \code{svyCatTable} class object has. This includes the (optionally stratified) part with summary statistics and, if available, p-values from the approximation method test (\code{chisq.test} by default) and exact method test (\code{fisher.test} by default) and standardized mean differences of all possible pairwise contrasts.
 ##'
-##' @param object An object that has the \code{CatTable} class to be shown.
+##' @param object An object that has the \code{svyCatTable} class to be shown.
 ##' @param digits Number of digits to print.
 ##' @param ... For compatibility with generic. Ignored.
 ##' @return None. Results are printed.
 ##' @author Kazuki Yoshida
 ##' @seealso
-##' \code{\link{CreateTableOne}}, \code{\link{CreateCatTable}}, \code{\link{print.CatTable}},
+##' \code{\link{svyCreateTableOne}}, \code{\link{svyCreateCatTable}},  \code{\link{print.svyCatTable}}
 ##' @examples
 ##'
-##' ## See examples for CreateTableOne
+##' ## See the examples for svyCreateTableOne()
 ##'
 ##' @export
-summary.CatTable <- function(object, digits = 1, ...) {
+summary.svyCatTable <- function(object, digits = 1, ...) {
 
     ## object and ... required to be consistent with generic summary(object, ...)
     CatTable <- object
 
     ## Create format
     fmt <- paste0("%.", digits, "f")
+    varsNumeric <- c("n","miss","p.miss","freq","percent","cum.percent")
 
     ## Obtain collpased result within each stratum
     CatTableCollapsed <-
@@ -44,10 +45,9 @@ summary.CatTable <- function(object, digits = 1, ...) {
                                                   DF)
 
                                       ## Format percent and cum.percent
-                                      DF[c("p.miss","percent","cum.percent")] <-
-                                          lapply(X = DF[c("p.miss","percent","cum.percent")],
-                                                 FUN = sprintf,
-                                                 fmt = fmt)
+                                      DF[varsNumeric] <- lapply(X = DF[varsNumeric],
+                                                                FUN = sprintf,
+                                                                fmt = fmt)
 
                                       ## Make var and level a string
                                       DF[c("var","level")] <-
@@ -73,8 +73,10 @@ summary.CatTable <- function(object, digits = 1, ...) {
                    DF
                }, simplify = FALSE)
 
-    ## Restore the dimnames through attributes()
-    attributes(CatTableCollapsed) <- c(attributes(CatTableCollapsed), attributes(CatTable))
+    ## Change to an array to use print.by()
+    CatTableCollapsed <- as.array(CatTableCollapsed)
+    ## Force dimname label as the strataVarName
+    names(dimnames(CatTableCollapsed)) <- attr(CatTable, "strataVarName")
 
     ## Print forcing the print.by method. Do not show row names.
     print.by(CatTableCollapsed, digits = digits, row.names = FALSE)
