@@ -1,6 +1,6 @@
-b33f1af487a82aa7b835681d8f591347 *DESCRIPTION
+0a5ab1598084a63083859eab1130b796 *DESCRIPTION
 3a33e60ac9a523d955952fd7706d3d4f *NAMESPACE
-ec2ebf16aeeca344cb66de444c52cd22 *NEWS
+1c81f95628e4459440d0337d0f214303 *NEWS
 340528e1e4fc79a2a5f5e69b8e2303a4 *R/CreateCatTable.R
 4ed1af51f5ee61ab363b916826b53ff6 *R/CreateContTable.R
 4af3c2a855a34f0f7605e414c3e6e9e5 *R/CreateTableOne.R
@@ -8,7 +8,7 @@ b482539ae416a13eb3ea9826f45aed32 *R/ExtractSmd.R
 d09a6230fee981b83db500636243cb56 *R/ShowRegTable.R
 cf4ac198e356bc15a1581b51ce34282d *R/modules-constructors.R
 66af2b2f4e90cafdddc708f403cd8450 *R/modules-print.R
-98447a7b237b1d2d9f6a5b097aef7c37 *R/modules-smd.R
+c1314dc1228a9e7c37dad21b0c475d10 *R/modules-smd.R
 dd8585b8f0f6f2bf86d66c3070e0993f *R/modules-svy.R
 ee720687e69668fe816c2e74f13140b2 *R/print.CatTable.R
 6fe3e1835af40c3536e61a3b5c4b18ab *R/print.ContTable.R
@@ -23,14 +23,14 @@ a9af883a54b7cddbe6eeba11a3f53821 *R/summary.TableOne.R
 47bc5fd8a6caa4f3ab5747980084c056 *R/svyCreateCatTable.R
 bbddc8763e4f8716374bceb213de8648 *R/svyCreateContTable.R
 aa6097a45ed8873ef0256035ae1eba98 *R/svyCreateTableOne.R
-57f193707783a1785bce6af759cdc1d2 *R/tableone-package.R
-21777f50bead79267e821bcefa1a040a *build/vignette.rds
+fada74dc26db40700ede28c4b1fe1087 *R/tableone-package.R
+5a0fb352e56cf09557459a8b6944d0af *build/vignette.rds
 3ec24d3a104428555287f86a7120ab71 *inst/doc/introduction.R
 4e96015695ec357713216fd0f9ceba67 *inst/doc/introduction.Rmd
 ed69e2aab7c5a34a946555ec628365a5 *inst/doc/introduction.html
 342cb89272918396a8be3f39922ae29f *inst/doc/smd.R
 ab5d8129392892bd34878f13d3f6e88e *inst/doc/smd.Rmd
-e628405831085d626ae1104c4e3babbf *inst/doc/smd.html
+2a05a22ae6b3b8bcb3b579235cc8f551 *inst/doc/smd.html
 b5b5f60305d2eb18b77068733324dc83 *man/CreateCatTable.Rd
 49115274be8a31cb1ab63ea4cd41f2f8 *man/CreateContTable.Rd
 14da0ba6b864003752356bc0d8db6a52 *man/CreateTableOne.Rd
@@ -49,7 +49,7 @@ c0ea7fedf37be5af3b763a5c4f25323c *man/summary.svyCatTable.Rd
 7ed05ec1a38877a3beea6a0602d43df9 *man/svyCreateCatTable.Rd
 4a72b9d1ab776b08aaf9b657ab8615ed *man/svyCreateContTable.Rd
 4031ec576a0244a2dbcc1cd7d07d7021 *man/svyCreateTableOne.Rd
-1e34c16abb25bfc32e65f891ac51e7d4 *man/tableone-package.Rd
+b0afa9b950a4a2c69180bd9a380c50e7 *man/tableone-package.Rd
 83f11ecda6ce99b95c941f4fdfd50fce *tests/test-all.R
 140e383dc2b038a39b4571ad26066d5a *tests/testthat/test-CreateTableOne.R
 be0cb706489350f0279e1549dda29a23 *tests/testthat/test-ExtractSmd.R
