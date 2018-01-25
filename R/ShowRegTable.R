@@ -7,7 +7,7 @@
 ##' @param exp TRUE by default. You need to specify exp = FALSE if your model is has the indentity link function (linear regression, etc).
 ##' @param digits Number of digits to print for the main part.
 ##' @param pDigits Number of digits to print for the p-values.
-##' @param printToggle Whether to print the output. If FLASE, no output is created, and a matrix is invisibly returned.
+##' @param printToggle Whether to print the output. If FALSE, no output is created, and a matrix is invisibly returned.
 ##' @param quote Whether to show everything in quotes. The default is FALSE. If TRUE, everything including the row and column names are quoted so that you can copy it to Excel easily.
 ##' @param ciFun Function used for calculation. \code{confint} is the default. For generalized linear models this gives the profile likelihood-based calculation, which may take too much time for large models, use \code{confint.default} for simple normal approximation method (+/- 1.96 * standard error).
 ##' @return A matrix containing what you see is returned invisibly. You can capture it by assignment to an object.
@@ -46,8 +46,9 @@ ShowRegTable <- function(model, exp = TRUE, digits = 2, pDigits = 3, printToggle
         ## nlme needs special handling
         ## Use column 2 because it is the point estimate
         modelCoef <- nlme::intervals(model)[[1]][, 2]
-    } else if (any(class(model) %in% c("lmerMod","glmerMod"))) {
+    } else if (any(class(model) %in% c("lmerMod","glmerMod","merModLmerTest"))) {
         ## (g)lmer gives confint for other extra parameters
+        ## lmerTest::lmer() gives a merModLmerTest object.
         modelCoef <- coef(summary(model))[,1]
     } else {
         modelCoef <- coef(model)
@@ -58,17 +59,26 @@ ShowRegTable <- function(model, exp = TRUE, digits = 2, pDigits = 3, printToggle
         ## nlme needs special handling
         ## Drop column 2 because it is the point estimate
         modelConfInt <- nlme::intervals(model)[[1]][, -2]
-    } else if (any(class(model) %in% c("lmerMod","glmerMod"))) {
-        ## (g)lmer gives confint for other extra parameters
+    } else if (any(class(model) %in% c("lmerMod","glmerMod","merModLmerTest"))) {
+        ## (g)lmer gives confint for other extra parameters.
+        ## The bottom ones are for fixed effects.
         modelConfInt <- tail(suppressMessages(ciFun(model)), length(modelCoef))
     } else {
         modelConfInt <- suppressMessages(ciFun(model))
     }
 
-    ## P-value extraction
+    ## Extract p-values
     if (any(class(model) %in% c("gls", "lme"))) {
         ## nlme needs special handling
         modelSummaryMat <- summary(model)$tTable
+    } else if (any(class(model) %in% c("lmerMod"))) {
+        ## lmerMod does not have p-values, add NA's
+        modelSummaryMat <- coef(summary(model))
+        modelSummaryMat <- cbind(modelSummaryMat,
+                                 rep(NA, nrow(modelSummaryMat)))
+    } else if (any(class(model) %in% c("merModLmerTest"))) {
+        ## Need to specify explicitly to invoke the correct summary method.
+        modelSummaryMat <- coef(lmerTest::summary(model))
     } else {
         modelSummaryMat <- coef(summary(model))
     }

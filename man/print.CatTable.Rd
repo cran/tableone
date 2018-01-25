@@ -7,8 +7,8 @@
 \method{print}{CatTable}(x, digits = 1, pDigits = 3, quote = FALSE,
   missing = FALSE, explain = TRUE, printToggle = TRUE, noSpaces = FALSE,
   format = c("fp", "f", "p", "pf")[1], showAllLevels = FALSE,
-  cramVars = NULL, test = TRUE, exact = NULL, smd = FALSE,
-  CrossTable = FALSE, ...)
+  cramVars = NULL, dropEqual = FALSE, test = TRUE, exact = NULL,
+  smd = FALSE, CrossTable = FALSE, ...)
 }
 \arguments{
 \item{x}{Object returned by \code{\link{CreateCatTable}} function.}
@@ -23,7 +23,7 @@
 
 \item{explain}{Whether to add explanation to the variable names, i.e., (\%) is added to the variable names when percentage is shown.}
 
-\item{printToggle}{Whether to print the output. If FLASE, no output is created, and a matrix is invisibly returned.}
+\item{printToggle}{Whether to print the output. If FALSE, no output is created, and a matrix is invisibly returned.}
 
 \item{noSpaces}{Whether to remove spaces added for alignment. Use this option if you prefer to align numbers yourself in other software.}
 
@@ -32,6 +32,8 @@
 \item{showAllLevels}{Whether to show all levels. FALSE by default, i.e., for 2-level categorical variables, only the higher level is shown to avoid redundant information.}
 
 \item{cramVars}{A character vector to specify the two-level categorical variables, for which both levels should be shown in one row.}
+
+\item{dropEqual}{Whether to drop " = second level name" description indicating which level is shown for two-level categorical variables.}
 
 \item{test}{Whether to show p-values. TRUE by default. If FALSE, only the numerical summaries are shown.}
 
