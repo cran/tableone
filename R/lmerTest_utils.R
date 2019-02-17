@@ -5,8 +5,8 @@ lmerTest_summary <- function(object, ...) {
         return(summary(object, ...))
     } else {
         ## lme4 object
-        return(summary(lmerTest::as_lmerModLmerTest(object), ...)) 
+        return(summary(lmerTest::as_lmerModLmerTest(object), ...))
     }
     ## *merModLmerTest objects and/or 'lmerTest' is not available
-    return(summary(object, ...)) 
+    return(summary(object, ...))
 }
