@@ -101,9 +101,33 @@ test_that("data assessment detects anomalies", {
 mwOverall  <- svyCreateTableOne(vars = vars, data = datSvy, factorVars = factorVars)
 mwInclNa   <- svyCreateTableOne(vars = vars, data = datSvy, factorVars = factorVars, includeNA = TRUE)
 mwByE    <- svyCreateTableOne(vars = vars, strata = c("E"), data = datSvy, factorVars = factorVars)
+
+## 2020-02-29
+## The following test fails in matrix inversion (appropriately) under R 3.6.2.
+## svyCreateTableOne
+## svyCreateContTable
+## ModuleTestSafe (This hides error in testing intentionally).
+## svyGlmTermTest
+## regTermTest(svyglm(E ~ ..strataVar.. (ExC1 6 categories), design)), )
+##  beta <- coef(res)
+##  V <- vcov(res) # 6x6 all elements numerically zeros
+##                 # This is expected as E ~ E*C1 has perfect prediction.
+##  chisq <- beta %*% solve(V) %*% beta # inversion by solve() fails
+## Error in solve.default(V) :
+##   Lapack routine dgesv: system is exactly singular: U[4,4] = 0
+## p value for row variable E will be NA. Previously, it was <0.001.
+##
+## R 3.6.1 (2019-07-05) no mention of solve(). 3 solve() related errors don't happen.
+## R 3.6.2 (2019-12-12) improved solve() and may have changed the behavior.
 mwByEC1 <- svyCreateTableOne(vars = vars, strata = c("E","C1"), data = datSvy, factorVars = factorVars)
+
 mwContOnlyByEC1 <- svyCreateTableOne(vars = c("E","C"), strata = c("E","C1"), data = datSvy, factorVars = factorVars)
 mwCatOnlyByEC1 <- svyCreateTableOne(vars = c("Y","C1"), strata = c("E","C1"), data = datSvy, factorVars = factorVars)
+mwByE_addOverall    <- svyCreateTableOne(vars = vars, strata = c("E"), data = datSvy, factorVars = factorVars, addOverall = TRUE)
+mwByEC1_addOverall <- svyCreateTableOne(vars = vars, strata = c("E","C1"), data = datSvy, factorVars = factorVars, addOverall = TRUE)
+
+
+
 
 ## Specify variables for special handling
 nonnormalVars <- c("C")
@@ -118,6 +142,9 @@ test_that("svyTableOne objects are always returned", {
     expect_equal(class(mwByEC1),         c("svyTableOne","TableOne"))
     expect_equal(class(mwContOnlyByEC1), c("svyTableOne","TableOne"))
     expect_equal(class(mwCatOnlyByEC1),  c("svyTableOne","TableOne"))
+    ## Extra-Test addOverall
+    expect_equal(class(mwByE_addOverall),         c("svyTableOne","TableOne"))
+    expect_equal(class(mwByEC1_addOverall),         c("svyTableOne","TableOne"))
 
 })
 
@@ -136,6 +163,9 @@ test_that("Missing percentages are correctly stored and printed", {
     ## Stratification should not matter
     expect_equal(mwByE$MetaData$percentMissing, percentMissing)
     expect_equal(mwByEC1$MetaData$percentMissing, percentMissing)
+    ## addOverall should not matter
+    expect_equal(mwByEC1_addOverall$MetaData$percentMissing, percentMissing)
+    expect_equal(mwByE_addOverall$MetaData$percentMissing, percentMissing)
 
     ## Check printing
     ## Gold standard
@@ -157,6 +187,10 @@ test_that("Missing percentages are correctly stored and printed", {
                  percentMissingString)
     expect_equal(DropEmptyString(print(mwByEC1, missing = TRUE)[,"Missing"]),
                  percentMissingString)
+    expect_equal(DropEmptyString(print(mwByE_addOverall, missing = TRUE)[,"Missing"]),
+                 percentMissingString)
+    expect_equal(DropEmptyString(print(mwByEC1_addOverall, missing = TRUE)[,"Missing"]),
+                 percentMissingString)
 
 })
 
@@ -173,8 +207,14 @@ test_that("printing of a svyTableOne object does not regress", {
     expect_equal_to_reference(print(mwInclNa, printToggle = TRUE),
                               "ref-svyTableOne_IncludeNA")
 
-    expect_equal_to_reference(print(mwByEC1, printToggle = TRUE),
-                              "ref-svyTableOne_2StrataVars")
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2) {
+        expect_equal_to_reference(print(mwByEC1, printToggle = TRUE),
+                                  "ref-svyTableOne_2StrataVars_new")
+    } else {
+        expect_equal_to_reference(print(mwByEC1, printToggle = TRUE),
+                                  "ref-svyTableOne_2StrataVars")
+    }
 
     expect_equal_to_reference(print(mwByE, catDigits = 3, contDigits = 4, pDigits = 5, printToggle = TRUE),
                               "ref-svyTableOne_digits")
@@ -197,11 +237,29 @@ test_that("printing of a svyTableOne object does not regress", {
     expect_equal_to_reference(print(mwByE, catDigits = 3, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE),
                               "ref-svyTableOne_noSpaces_showAllLevels_quote")
 
-    expect_equal_to_reference(print(mwContOnlyByEC1),
-                              "ref-svyTableOne_ContOnly")
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2) {
+        expect_equal_to_reference(print(mwContOnlyByEC1),
+                                  "ref-svyTableOne_ContOnly_new")
+    } else {
+        expect_equal_to_reference(print(mwContOnlyByEC1),
+                                  "ref-svyTableOne_ContOnly")
+    }
 
     expect_equal_to_reference(print(mwCatOnlyByEC1),
                               "ref-svyTableOne_CatOnly")
+
+    expect_equal_to_reference(print(mwByE_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                              "ref-svyTableOne_addOverall")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2) {
+        expect_equal_to_reference(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                                  "ref-svyTableOne_2StrataVars_addOverall_new")
+    } else {
+        expect_equal_to_reference(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                                  "ref-svyTableOne_2StrataVars_addOverall")
+    }
 
 })
 
@@ -251,6 +309,12 @@ test_that("printing of a svyTableOne$CatTable object do not regress", {
     expect_equal_to_reference(print(mwByE$CatTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
                               "ref-svyCatTable_noSpaces_showAllLevels_quote")
 
+    expect_equal_to_reference(print(mwByE_addOverall$CatTable, printToggle = TRUE, test = TRUE, smd = TRUE),
+                              "ref-svyCatTable_addOverall")
+
+    expect_equal_to_reference(print(mwByEC1_addOverall$CatTable, printToggle = TRUE, test = TRUE, smd = TRUE),
+                              "ref-svyCatTable_2StrataVars_addOverall")
+
     ## gmodels::CrossTable
     print(mwByEC1$CatTable, CrossTable = TRUE)
     expect_output(print(mwByEC1$CatTable, CrossTable = TRUE),
@@ -274,8 +338,14 @@ test_that("printing of a svyTableOne$ContTable object do not regress", {
     expect_equal_to_reference(print(mwOverall$ContTable, printToggle = TRUE),
                               "ref-svyContTable_overallPrint")
 
-    expect_equal_to_reference(print(mwByEC1$ContTable, printToggle = TRUE),
-                              "ref-svyContTable_2StrataVars")
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2) {
+        expect_equal_to_reference(print(mwByEC1$ContTable, printToggle = TRUE),
+                                  "ref-svyContTable_2StrataVars_new")
+    } else {
+        expect_equal_to_reference(print(mwByEC1$ContTable, printToggle = TRUE),
+                                  "ref-svyContTable_2StrataVars")
+    }
 
     expect_equal_to_reference(print(mwByE$ContTable, digits = 3, pDigits = 5, printToggle = TRUE),
                               "ref-svyContTable_digits")
@@ -299,6 +369,18 @@ test_that("printing of a svyTableOne$ContTable object do not regress", {
 
     expect_equal_to_reference(print(mwByE$ContTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
                               "ref-svyContTable_noSpaces_showAllLevels_quote")
+
+    expect_equal_to_reference(print(mwByE_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
+                              "ref-svyContTable_addOverall")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2) {
+        expect_equal_to_reference(print(mwByEC1_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
+                                  "ref-svyContTable_2StrataVars_addOverall_new")
+    } else {
+        expect_equal_to_reference(print(mwByEC1_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
+                                  "ref-svyContTable_2StrataVars_addOverall")
+    }
 })
 
 
@@ -321,6 +403,7 @@ test_that("p values are correctly calculated", {
     c(svyTestNormal("C ~ factor(E)", datSvy, test.terms = "factor(E)", method = "Wald")$p.value,
       svyTestNormal("C2 ~ factor(E)", datSvy, test.terms = "factor(E)", method = "Wald")$p.value)
     expect_equal(attr(mwByE$ContTable, "pValues")[, "pNormal"][-1], pValuesTestNormal)
+    expect_equal(attr(mwByE_addOverall$ContTable, "pValues")[, "pNormal"][-1], pValuesTestNormal)
 
     ## svyglm to do ANOVA equivalent
     ## Call stack
@@ -331,10 +414,10 @@ test_that("p values are correctly calculated", {
     ##     solve.default
     ## solve.default() can error on some systems: i386, MLK, OpenBLAS
     ## system is computationally singular: reciprocal condition number = 5.45299e-17
-    ## if (R.Version()$arch != "i386") {
-        ## expect_equal(attr(mwByE$ContTable, "pValues")[, "pNormal"][1],
-        ##              svyTestNormal("E ~ factor(E)", datSvy, test.terms = "factor(E)", method = "Wald")$p.value)
-    ## }
+    if (R.Version()$arch != "i386") {
+        expect_equal(attr(mwByE$ContTable, "pValues")[, "pNormal"][1],
+                     svyTestNormal("E ~ factor(E)", datSvy, test.terms = "factor(E)", method = "Wald")$p.value)
+    }
 
     ## svyranktest
     pValuesTestNonNormal <-
@@ -342,6 +425,7 @@ test_that("p values are correctly calculated", {
       svyTestNonNormal("C ~ factor(E)", datSvy)$p.value,
       svyTestNonNormal("C2 ~ factor(E)", datSvy)$p.value)
     expect_equal(attr(mwByE$ContTable, "pValues")[, "pNonNormal"], pValuesTestNonNormal)
+    expect_equal(attr(mwByE_addOverall$ContTable, "pValues")[, "pNonNormal"], pValuesTestNonNormal)
 
 })
 
@@ -494,6 +578,10 @@ test_that("summary method works without errors", {
     summary(mwCatOnlyByEC1)
     expect_output(summary(mwCatOnlyByEC1),
                   "Standardize mean differences")
+
+    ## AddOverall Test
+    expect_output(summary(mwByEC1_addOverall), "E:C1: Overall")
+    expect_output(summary(mwByEC1_addOverall), "E:C1: 3:1")
 
 })
 
