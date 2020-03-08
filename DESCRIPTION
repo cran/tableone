@@ -1,8 +1,8 @@
 Package: tableone
 Type: Package
 Title: Create 'Table 1' to Describe Baseline Characteristics
-Version: 0.11.0
-Date: 2020-03-01
+Version: 0.11.1
+Date: 2020-03-07
 Authors@R: c(
     # http://r-pkgs.had.co.nz/description.html#author
     person('Kazuki', 'Yoshida', email = 'kazukiyoshida@mail.harvard.edu', role = c('cre','aut'), comment = c(ORCID = '0000-0002-2030-3549')),
@@ -24,15 +24,14 @@ Description: Creates 'Table 1', i.e., description of baseline patient
     'Deducer' , a Java-based GUI package by Ian Fellows. This package
     does not require GUI or Java, and intended for command-line users.
 License: GPL-2
-Imports: survey, MASS, e1071, zoo, gmodels, nlme, lmerTest, labelled,
-        methods
+Imports: survey, MASS, e1071, zoo, gmodels, nlme, lmerTest, labelled
 Suggests: survival, testthat, Matrix, Matching, reshape2, ggplot2,
         knitr, geepack, lme4
 URL: https://github.com/kaz-yos/tableone
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2
 NeedsCompilation: no
-Packaged: 2020-03-01 11:58:13 UTC; kazuki
+Packaged: 2020-03-07 10:41:34 UTC; kazuki
 Author: Kazuki Yoshida [cre, aut] (<https://orcid.org/0000-0002-2030-3549>),
   Alexander Bartel [ctb] (<https://orcid.org/0000-0002-1280-6138>),
   Jonathan J Chipman [ctb],
@@ -42,4 +41,4 @@ Author: Kazuki Yoshida [cre, aut] (<https://orcid.org/0000-0002-2030-3549>),
   Rune Haubo B Christensen [ctb],
   gbouzill [ctb]
 Repository: CRAN
-Date/Publication: 2020-03-01 12:30:02 UTC
+Date/Publication: 2020-03-08 23:00:02 UTC
