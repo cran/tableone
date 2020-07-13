@@ -15,7 +15,7 @@ options(width = 116, scipen = 5)
 ## -----------------------------------------------------------------------------------------------------------------
 ## tableone package itself
 library(tableone)
-## survival pcakge for Mayo Clinic's PBC data
+## survival package for Mayo Clinic's PBC data
 library(survival)
 data(pbc)
 
