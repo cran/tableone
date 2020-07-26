@@ -25,6 +25,7 @@
   exact = NULL,
   nonnormal = NULL,
   minMax = FALSE,
+  formatOptions = list(scientific = FALSE),
   ...
 )
 }
@@ -69,6 +70,8 @@
 
 \item{minMax}{Whether to use [min,max] instead of [p25,p75] for nonnormal variables. The default is FALSE.}
 
+\item{formatOptions}{A list of options, which will be passed to \code{\link[base]{format}}. Can be used to modify the \code{big.mark}, \code{decimal.mark}, \code{big.interval} etc. The default is \code{list(scientific = FALSE)}. The options digits, nsmall, justify and trim are not available. (Experimental)}
+
 \item{...}{For compatibility with generic. Ignored.}
 }
 \value{
@@ -86,5 +89,5 @@ A matrix object containing what you see is also invisibly returned. This can be 
 \code{\link{CreateTableOne}}, \code{\link{CreateTableOne}}, \code{\link{summary.TableOne}}
 }
 \author{
-Kazuki Yoshida, Justin Bohn
+Kazuki Yoshida, Justin Bohn, Alexander Bartel
 }

@@ -39,18 +39,18 @@ tab2 <- CreateTableOne(vars = myVars, data = pbc, factorVars = catVars)
 tab2
 
 ## -----------------------------------------------------------------------------------------------------------------
-print(tab2, showAllLevels = TRUE)
+print(tab2, showAllLevels = TRUE, formatOptions = list(big.mark = ","))
 
 ## -----------------------------------------------------------------------------------------------------------------
 summary(tab2)
 
 ## -----------------------------------------------------------------------------------------------------------------
 biomarkers <- c("bili","chol","copper","alk.phos","ast","trig","protime")
-print(tab2, nonnormal = biomarkers)
+print(tab2, nonnormal = biomarkers, formatOptions = list(big.mark = ","))
 
 ## -----------------------------------------------------------------------------------------------------------------
 tab3 <- CreateTableOne(vars = myVars, strata = "trt" , data = pbc, factorVars = catVars)
-tab3
+print(tab3, nonnormal = biomarkers, formatOptions = list(big.mark = ","))
 
 ## -----------------------------------------------------------------------------------------------------------------
 print(tab3, nonnormal = biomarkers, exact = "stage", smd = TRUE)

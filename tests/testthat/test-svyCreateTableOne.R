@@ -119,6 +119,20 @@ mwByE    <- svyCreateTableOne(vars = vars, strata = c("E"), data = datSvy, facto
 ##
 ## R 3.6.1 (2019-07-05) no mention of solve(). 3 solve() related errors don't happen.
 ## R 3.6.2 (2019-12-12) improved solve() and may have changed the behavior.
+##
+## 2020-07-25
+## If solve(Vmat) errors, the resulting p value is going to be NA. If not, <0.001.
+Vmat <- structure(c(8.75501633118467e-34, 1.46773954995106e-33, 1.17162059153476e-33,
+                    8.75501633118467e-34, 8.75501633118467e-34, 1.46773954995106e-33,
+                    9.16683246877479e-33, 1.36903323047896e-33, 1.46773954995106e-33,
+                    1.46773954995106e-33, 1.17162059153476e-33, 1.36903323047896e-33,
+                    5.21857968989081e-33, 1.17162059153476e-33, 1.17162059153476e-33,
+                    8.75501633118467e-34, 1.46773954995106e-33, 1.17162059153476e-33,
+                    8.75501633118467e-34, 8.75501633118467e-34, 8.75501633118467e-34,
+                    1.46773954995106e-33, 1.17162059153476e-33, 8.75501633118467e-34,
+                    8.75501633118467e-34), .Dim = c(5L, 5L))
+logical_na_expected <- (class(try(solve(Vmat)))[1] == "try-error")
+
 mwByEC1 <- svyCreateTableOne(vars = vars, strata = c("E","C1"), data = datSvy, factorVars = factorVars)
 
 mwContOnlyByEC1 <- svyCreateTableOne(vars = c("E","C"), strata = c("E","C1"), data = datSvy, factorVars = factorVars)
@@ -199,69 +213,86 @@ test_that("printing of a svyTableOne object does not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(mwByE, printToggle = TRUE),
-                              "ref-svyTableOne_defaultPrint")
+                              "ref-svyTableOne_defaultPrint.rds")
 
     expect_equal_to_reference(print(mwOverall, printToggle = TRUE),
-                              "ref-svyTableOne_overallPrint")
+                              "ref-svyTableOne_overallPrint.rds")
 
     expect_equal_to_reference(print(mwInclNa, printToggle = TRUE),
-                              "ref-svyTableOne_IncludeNA")
+                              "ref-svyTableOne_IncludeNA.rds")
 
     ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
-    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2 |
-        as.numeric(R.Version()$major) >= 4) {
+    if (logical_na_expected) {
         expect_equal_to_reference(print(mwByEC1, printToggle = TRUE),
-                                  "ref-svyTableOne_2StrataVars_new")
+                                  "ref-svyTableOne_2StrataVars_na.rds")
     } else {
         expect_equal_to_reference(print(mwByEC1, printToggle = TRUE),
-                                  "ref-svyTableOne_2StrataVars")
+                                  "ref-svyTableOne_2StrataVars.rds")
     }
 
     expect_equal_to_reference(print(mwByE, catDigits = 3, contDigits = 4, pDigits = 5, printToggle = TRUE),
-                              "ref-svyTableOne_digits")
+                              "ref-svyTableOne_digits.rds")
 
     expect_equal_to_reference(print(mwByE, test = FALSE, printToggle = TRUE),
-                              "ref-svyTableOne_noTests")
+                              "ref-svyTableOne_noTests.rds")
 
     expect_equal_to_reference(print(mwByE, nonnormal = nonnormalVars, exact = exactVars, printToggle = TRUE),
-                              "ref-svyTableOne_nonnormal_exact")
+                              "ref-svyTableOne_nonnormal_exact.rds")
 
     expect_equal_to_reference(print(mwByE, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
-                              "ref-svyTableOne_nonnormal_minMax")
+                              "ref-svyTableOne_nonnormal_minMax.rds")
 
     expect_equal_to_reference(print(mwByE, catDigits = 3, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-svyTableOne_noSpaces")
+                              "ref-svyTableOne_noSpaces.rds")
 
     expect_equal_to_reference(print(mwByE, nonnormal = nonnormalVars, exact = exactVars, showAllLevels = TRUE, printToggle = TRUE),
-                              "ref-svyTableOne_showAllLevels")
+                              "ref-svyTableOne_showAllLevels.rds")
 
     expect_equal_to_reference(print(mwByE, catDigits = 3, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE),
-                              "ref-svyTableOne_noSpaces_showAllLevels_quote")
+                              "ref-svyTableOne_noSpaces_showAllLevels_quote.rds")
 
     ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
-    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2 |
-        as.numeric(R.Version()$major) >= 4) {
+    if (logical_na_expected) {
         expect_equal_to_reference(print(mwContOnlyByEC1),
-                                  "ref-svyTableOne_ContOnly_new")
+                                  "ref-svyTableOne_ContOnly_na.rds")
     } else {
         expect_equal_to_reference(print(mwContOnlyByEC1),
-                                  "ref-svyTableOne_ContOnly")
+                                  "ref-svyTableOne_ContOnly.rds")
     }
 
     expect_equal_to_reference(print(mwCatOnlyByEC1),
-                              "ref-svyTableOne_CatOnly")
+                              "ref-svyTableOne_CatOnly.rds")
 
+    ## Regression tests for addOverall
     expect_equal_to_reference(print(mwByE_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
-                              "ref-svyTableOne_addOverall")
+                              "ref-svyTableOne_addOverall.rds")
 
     ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
-    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2 |
-        as.numeric(R.Version()$major) >= 4) {
+    if (logical_na_expected) {
         expect_equal_to_reference(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
-                                  "ref-svyTableOne_2StrataVars_addOverall_new")
+                                  "ref-svyTableOne_2StrataVars_addOverall_na.rds")
     } else {
         expect_equal_to_reference(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
-                                  "ref-svyTableOne_2StrataVars_addOverall")
+                                  "ref-svyTableOne_2StrataVars_addOverall.rds")
+    }
+
+    ## Regression tests for formatOptions
+    expect_equal_to_reference(
+        print(mwByE_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-svyTableOne_addOverall_formatOptions.rds")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (logical_na_expected) {
+        expect_equal_to_reference(
+            print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+                  formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+            "ref-svyTableOne_2StrataVars_addOverall_na_formatOptions.rds")
+    } else {
+        expect_equal_to_reference(
+            print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+                  formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+            "ref-svyTableOne_2StrataVars_addOverall_formatOptions.rds")
     }
 
 })
@@ -271,52 +302,52 @@ test_that("printing of a svyTableOne$CatTable object do not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(mwByE$CatTable, printToggle = TRUE),
-                              "ref-svyCatTable_defaultPrint")
+                              "ref-svyCatTable_defaultPrint.rds")
 
     expect_equal_to_reference(print(mwOverall$CatTable, printToggle = TRUE),
-                              "ref-svyCatTable_overallPrint")
+                              "ref-svyCatTable_overallPrint.rds")
 
     expect_equal_to_reference(print(mwInclNa$CatTable, printToggle = TRUE),
-                              "ref-svyCatTable_IncludeNA")
+                              "ref-svyCatTable_IncludeNA.rds")
 
     expect_equal_to_reference(print(mwByEC1$CatTable, printToggle = TRUE),
-                              "ref-svyCatTable_2StrataVars")
+                              "ref-svyCatTable_2StrataVars.rds")
 
     expect_equal_to_reference(print(mwByEC1$CatTable, digits = 3, pDigits = 5, printToggle = TRUE),
-                              "ref-svyCatTable_digits")
+                              "ref-svyCatTable_digits.rds")
 
     expect_equal_to_reference(print(mwByEC1$CatTable, test = FALSE, printToggle = TRUE),
-                              "ref-svyCatTable_noTests")
+                              "ref-svyCatTable_noTests.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, digits = 3, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-svyCatTable_noSpaces")
+                              "ref-svyCatTable_noSpaces.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, showAllLevels = TRUE, printToggle = TRUE),
-                              "ref-svyCatTable_showAllLevels")
+                              "ref-svyCatTable_showAllLevels.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, explain = FALSE, printToggle = TRUE),
-                              "ref-svyCatTable_explain")
+                              "ref-svyCatTable_explain.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, format = "f", printToggle = TRUE),
-                              "ref-svyCatTable_format_f")
+                              "ref-svyCatTable_format_f.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, format = "p", printToggle = TRUE),
-                              "ref-svyCatTable_format_p")
+                              "ref-svyCatTable_format_p.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, format = "pf", printToggle = TRUE),
-                              "ref-svyCatTable_format_pf")
+                              "ref-svyCatTable_format_pf.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, cramVars = "Y", printToggle = TRUE),
-                              "ref-svyCatTable_cramVars")
+                              "ref-svyCatTable_cramVars.rds")
 
     expect_equal_to_reference(print(mwByE$CatTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
-                              "ref-svyCatTable_noSpaces_showAllLevels_quote")
+                              "ref-svyCatTable_noSpaces_showAllLevels_quote.rds")
 
     expect_equal_to_reference(print(mwByE_addOverall$CatTable, printToggle = TRUE, test = TRUE, smd = TRUE),
-                              "ref-svyCatTable_addOverall")
+                              "ref-svyCatTable_addOverall.rds")
 
     expect_equal_to_reference(print(mwByEC1_addOverall$CatTable, printToggle = TRUE, test = TRUE, smd = TRUE),
-                              "ref-svyCatTable_2StrataVars_addOverall")
+                              "ref-svyCatTable_2StrataVars_addOverall.rds")
 
     ## gmodels::CrossTable
     print(mwByEC1$CatTable, CrossTable = TRUE)
@@ -336,58 +367,143 @@ test_that("printing of a svyTableOne$ContTable object do not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(mwByE$ContTable, printToggle = TRUE),
-                              "ref-svyContTable_defaultPrint")
+                              "ref-svyContTable_defaultPrint.rds")
 
     expect_equal_to_reference(print(mwOverall$ContTable, printToggle = TRUE),
-                              "ref-svyContTable_overallPrint")
+                              "ref-svyContTable_overallPrint.rds")
 
     ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
-    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2 |
-        as.numeric(R.Version()$major) >= 4) {
+    if (logical_na_expected) {
         expect_equal_to_reference(print(mwByEC1$ContTable, printToggle = TRUE),
-                                  "ref-svyContTable_2StrataVars_new")
+                                  "ref-svyContTable_2StrataVars_na.rds")
     } else {
         expect_equal_to_reference(print(mwByEC1$ContTable, printToggle = TRUE),
-                                  "ref-svyContTable_2StrataVars")
+                                  "ref-svyContTable_2StrataVars.rds")
     }
 
     expect_equal_to_reference(print(mwByE$ContTable, digits = 3, pDigits = 5, printToggle = TRUE),
-                              "ref-svyContTable_digits")
+                              "ref-svyContTable_digits.rds")
 
     expect_equal_to_reference(print(mwByE$ContTable, test = FALSE, printToggle = TRUE),
-                              "ref-svyContTable_noTests")
+                              "ref-svyContTable_noTests.rds")
 
     expect_equal_to_reference(print(mwByE$ContTable, nonnormal = nonnormalVars, printToggle = TRUE),
-                              "ref-svyContTable_nonnormal")
+                              "ref-svyContTable_nonnormal.rds")
 
     expect_equal_to_reference(print(mwByE$ContTable, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
-                              "ref-svyContTable_nonnormal_minMax")
+                              "ref-svyContTable_nonnormal_minMax.rds")
 
     ## This does not make a difference here
     expect_equal_to_reference(print(mwByE$ContTable, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-svyContTable_noSpaces")
+                              "ref-svyContTable_noSpaces.rds")
 
 
     expect_equal_to_reference(print(mwByE$ContTable, explain = FALSE, printToggle = TRUE),
-                              "ref-svyContTable_explain")
+                              "ref-svyContTable_explain.rds")
 
     expect_equal_to_reference(print(mwByE$ContTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
-                              "ref-svyContTable_noSpaces_showAllLevels_quote")
+                              "ref-svyContTable_noSpaces_showAllLevels_quote.rds")
 
     expect_equal_to_reference(print(mwByE_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
-                              "ref-svyContTable_addOverall")
+                              "ref-svyContTable_addOverall.rds")
 
     ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
-    if (as.numeric(R.Version()$major) >= 3 & as.numeric(R.Version()$minor) == 6.2 |
-        as.numeric(R.Version()$major) >= 4) {
+    if (logical_na_expected) {
         expect_equal_to_reference(print(mwByEC1_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
-                                  "ref-svyContTable_2StrataVars_addOverall_new")
+                                  "ref-svyContTable_2StrataVars_addOverall_na.rds")
     } else {
         expect_equal_to_reference(print(mwByEC1_addOverall$ContTable, printToggle = TRUE, test = TRUE, smd = TRUE),
-                                  "ref-svyContTable_2StrataVars_addOverall")
+                                  "ref-svyContTable_2StrataVars_addOverall.rds")
     }
 })
 
+test_that("printing of a svyTableOne object does not regress (readable)", {
+
+    ## Expectations
+    expect_known_output(print(mwByE, printToggle = TRUE),
+                        "ref-svyTableOne_defaultPrint.txt")
+
+    expect_known_output(print(mwOverall, printToggle = TRUE),
+                        "ref-svyTableOne_overallPrint.txt")
+
+    expect_known_output(print(mwInclNa, printToggle = TRUE),
+                        "ref-svyTableOne_IncludeNA.txt")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (logical_na_expected) {
+        expect_known_output(print(mwByEC1, printToggle = TRUE),
+                            "ref-svyTableOne_2StrataVars_na.txt")
+    } else {
+        expect_known_output(print(mwByEC1, printToggle = TRUE),
+                            "ref-svyTableOne_2StrataVars.txt")
+    }
+
+    expect_known_output(print(mwByE, catDigits = 3, contDigits = 4, pDigits = 5, printToggle = TRUE),
+                        "ref-svyTableOne_digits.txt")
+
+    expect_known_output(print(mwByE, test = FALSE, printToggle = TRUE),
+                        "ref-svyTableOne_noTests.txt")
+
+    expect_known_output(print(mwByE, nonnormal = nonnormalVars, exact = exactVars, printToggle = TRUE),
+                        "ref-svyTableOne_nonnormal_exact.txt")
+
+    expect_known_output(print(mwByE, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
+                        "ref-svyTableOne_nonnormal_minMax.txt")
+
+    expect_known_output(print(mwByE, catDigits = 3, noSpaces = TRUE, printToggle = TRUE),
+                        "ref-svyTableOne_noSpaces.txt")
+
+    expect_known_output(print(mwByE, nonnormal = nonnormalVars, exact = exactVars, showAllLevels = TRUE, printToggle = TRUE),
+                        "ref-svyTableOne_showAllLevels.txt")
+
+    expect_known_output(print(mwByE, catDigits = 3, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE),
+                        "ref-svyTableOne_noSpaces_showAllLevels_quote.txt")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (logical_na_expected) {
+        expect_known_output(print(mwContOnlyByEC1),
+                            "ref-svyTableOne_ContOnly_na.txt")
+    } else {
+        expect_known_output(print(mwContOnlyByEC1),
+                            "ref-svyTableOne_ContOnly.txt")
+    }
+
+    expect_known_output(print(mwCatOnlyByEC1),
+                        "ref-svyTableOne_CatOnly.txt")
+
+    ## Regression tests for addOverall
+    expect_known_output(print(mwByE_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                        "ref-svyTableOne_addOverall.txt")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (logical_na_expected) {
+        expect_known_output(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                            "ref-svyTableOne_2StrataVars_addOverall_na.txt")
+    } else {
+        expect_known_output(print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE),
+                            "ref-svyTableOne_2StrataVars_addOverall.txt")
+    }
+
+    ## Regression tests for formatOptions
+    expect_known_output(
+        print(mwByE_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-svyTableOne_addOverall_formatOptions.txt")
+
+    ## 2020-02-29 Error due to solve() behavior change in R 3.6.2.
+    if (logical_na_expected) {
+        expect_known_output(
+            print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+                  formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+            "ref-svyTableOne_2StrataVars_addOverall_na_formatOptions.txt")
+    } else {
+        expect_known_output(
+            print(mwByEC1_addOverall, printToggle = TRUE, test = TRUE, smd = TRUE,
+                  formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+            "ref-svyTableOne_2StrataVars_addOverall_formatOptions.txt")
+    }
+
+})
 
 
 ### p value calculations

@@ -11,6 +11,11 @@
 library(testthat)
 
 
+expect_known_output <- function(...) {
+    testthat::expect_known_output(..., width = 120)
+}
+
+
 ###
 ### Context (1 for each file)
 ################################################################################
@@ -198,7 +203,7 @@ test_that("Missing percentages are correctly stored and printed", {
     ## addOverall should not matter
     expect_equal(pbcByTrt_addOverall$MetaData$percentMissing, percentMissing)
     expect_equal(pbcByTrtSex_addOverall$MetaData$percentMissing, percentMissing)
-    
+
     ## Check printing
     ## Gold standard
     percentMissingString <- format(sprintf("%.1f", percentMissing), justify = "right")
@@ -237,7 +242,7 @@ test_that("Missing percentages are correctly stored and printed", {
     expect_equal_to_reference(print(tableOne, nonnormal = c("bili","chol","copper","alk.phos","trig"),
                                     exact = c("status","stage"), test = FALSE, smd = TRUE, missing = TRUE,
                                     printToggle = TRUE),
-                              "ref-TableOne_print_missing")
+                              "ref-TableOne_print_missing.rds")
 
 })
 
@@ -313,57 +318,79 @@ test_that("printing of a TableOne object does not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(pbcByTrt, printToggle = TRUE),
-                              "ref-TableOne_defaultPrint")
+                              "ref-TableOne_defaultPrint.rds")
 
     expect_equal_to_reference(print(pbcOverall, printToggle = TRUE),
-                              "ref-TableOne_overallPrint")
+                              "ref-TableOne_overallPrint.rds")
 
     expect_equal_to_reference(print(pbcInclNa, printToggle = TRUE),
-                              "ref-TableOne_IncludeNA")
+                              "ref-TableOne_IncludeNA.rds")
 
     expect_equal_to_reference(print(pbcByTrtSex, printToggle = TRUE),
-                              "ref-TableOne_2StrataVars")
+                              "ref-TableOne_2StrataVars.rds")
 
     expect_equal_to_reference(print(pbcByTrt, catDigits = 3, contDigits = 4, pDigits = 5, printToggle = TRUE),
-                              "ref-TableOne_digits")
+                              "ref-TableOne_digits.rds")
 
     expect_equal_to_reference(print(pbcByTrt, test = FALSE, printToggle = TRUE),
-                              "ref-TableOne_noTests")
+                              "ref-TableOne_noTests.rds")
 
     expect_equal_to_reference(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, printToggle = TRUE),
-                              "ref-TableOne_nonnormal_exact")
+                              "ref-TableOne_nonnormal_exact.rds")
 
     expect_equal_to_reference(print(pbcByTrt, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
-                              "ref-TableOne_nonnormal_minMax")
+                              "ref-TableOne_nonnormal_minMax.rds")
 
     expect_equal_to_reference(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-TableOne_noSpaces")
+                              "ref-TableOne_noSpaces.rds")
 
     expect_equal_to_reference(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, showAllLevels = TRUE, printToggle = TRUE),
-                              "ref-TableOne_showAllLevels")
+                              "ref-TableOne_showAllLevels.rds")
 
     expect_equal_to_reference(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE),
-                              "ref-TableOne_noSpaces_showAllLevels_quote")
+                              "ref-TableOne_noSpaces_showAllLevels_quote.rds")
 
     expect_equal_to_reference(print(pbcContOnlyByTrtSex),
-                              "ref-TableOne_ContOnly")
+                              "ref-TableOne_ContOnly.rds")
 
     expect_equal_to_reference(print(pbcCatOnlyByTrtSex),
-                              "ref-TableOne_CatOnly")
-    
+                              "ref-TableOne_CatOnly.rds")
+
     ## Add Overall Tests always with smd and tests
     expect_equal_to_reference(print(pbcByTrt_addOverall, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE, smd = TRUE, test = TRUE),
-                              "ref-TableOne_noSpaces_showAllLevels_quote_addOverall")
-    
-    expect_equal_to_reference(print(pbcByTrtSex_addOverall, printToggle = TRUE, smd = TRUE, test = TRUE),
-                              "ref-TableOne_2StrataVars_addOverall")
-    
-    expect_equal_to_reference(print(pbcContOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
-                              "ref-TableOne_ContOnly_addOverall")
-    
-    expect_equal_to_reference(print(pbcCatOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
-                              "ref-TableOne_CatOnly_addOverall")
+                              "ref-TableOne_noSpaces_showAllLevels_quote_addOverall.rds")
 
+    expect_equal_to_reference(print(pbcByTrtSex_addOverall, printToggle = TRUE, smd = TRUE, test = TRUE),
+                              "ref-TableOne_2StrataVars_addOverall.rds")
+
+    expect_equal_to_reference(print(pbcContOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
+                              "ref-TableOne_ContOnly_addOverall.rds")
+
+    expect_equal_to_reference(print(pbcCatOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
+                              "ref-TableOne_CatOnly_addOverall.rds")
+
+    ## Regression tests for formatOptions always with smd and tests
+    expect_equal_to_reference(
+        print(pbcByTrt_addOverall, nonnormal = nonnormalVars, exact = exactVars,
+              noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE,
+              printToggle = TRUE, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_noSpaces_showAllLevels_quote_addOverall_formatOptions.rds")
+
+    expect_equal_to_reference(
+        print(pbcByTrtSex_addOverall, printToggle = TRUE, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_2StrataVars_addOverall_formatOptions.rds")
+
+    expect_equal_to_reference(
+        print(pbcContOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_ContOnly_addOverall_formatOptions.rds")
+
+    expect_equal_to_reference(
+        print(pbcCatOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_CatOnly_addOverall_formatOptions.rds")
 })
 
 
@@ -371,52 +398,52 @@ test_that("printing of a TableOne$CatTable object do not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(pbcByTrt$CatTable, printToggle = TRUE),
-                              "ref-CatTable_defaultPrint")
+                              "ref-CatTable_defaultPrint.rds")
 
     expect_equal_to_reference(print(pbcOverall$CatTable, printToggle = TRUE),
-                              "ref-CatTable_overallPrint")
+                              "ref-CatTable_overallPrint.rds")
 
     expect_equal_to_reference(print(pbcInclNa$CatTable, printToggle = TRUE),
-                              "ref-CatTable_IncludeNA")
+                              "ref-CatTable_IncludeNA.rds")
 
     expect_equal_to_reference(print(pbcByTrtSex$CatTable, printToggle = TRUE),
-                              "ref-CatTable_2StrataVars")
+                              "ref-CatTable_2StrataVars.rds")
 
     expect_equal_to_reference(print(pbcByTrtSex$CatTable, digits = 3, pDigits = 5, printToggle = TRUE),
-                              "ref-CatTable_digits")
+                              "ref-CatTable_digits.rds")
 
     expect_equal_to_reference(print(pbcByTrtSex$CatTable, test = FALSE, printToggle = TRUE),
-                              "ref-CatTable_noTests")
+                              "ref-CatTable_noTests.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-CatTable_noSpaces")
+                              "ref-CatTable_noSpaces.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, showAllLevels = TRUE, printToggle = TRUE),
-                              "ref-CatTable_showAllLevels")
+                              "ref-CatTable_showAllLevels.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, explain = FALSE, printToggle = TRUE),
-                              "ref-CatTable_explain")
+                              "ref-CatTable_explain.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, format = "f", printToggle = TRUE),
-                              "ref-CatTable_format_f")
+                              "ref-CatTable_format_f.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, format = "p", printToggle = TRUE),
-                              "ref-CatTable_format_p")
+                              "ref-CatTable_format_p.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, format = "pf", printToggle = TRUE),
-                              "ref-CatTable_format_pf")
+                              "ref-CatTable_format_pf.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, cramVars = "sex", printToggle = TRUE),
-                              "ref-CatTable_cramVars")
+                              "ref-CatTable_cramVars.rds")
 
     expect_equal_to_reference(print(pbcByTrt$CatTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
-                              "ref-CatTable_noSpaces_showAllLevels_quote")
-    
+                              "ref-CatTable_noSpaces_showAllLevels_quote.rds")
+
     expect_equal_to_reference(print(pbcByTrt_addOverall$CatTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
-                              "ref-CatTable_noSpaces_showAllLevels_quote_addOverall")
-    
+                              "ref-CatTable_noSpaces_showAllLevels_quote_addOverall.rds")
+
     expect_equal_to_reference(print(pbcByTrtSex_addOverall$CatTable, printToggle = TRUE),
-                              "ref-CatTable_2StrataVars_addOverall")
+                              "ref-CatTable_2StrataVars_addOverall.rds")
 
     ## gmodels::CrossTable
     print(pbcByTrt$CatTable, CrossTable = TRUE)
@@ -436,40 +463,124 @@ test_that("printing of a TableOne$ContTable object do not regress", {
 
     ## Expectations
     expect_equal_to_reference(print(pbcByTrt$ContTable, printToggle = TRUE),
-                              "ref-ContTable_defaultPrint")
+                              "ref-ContTable_defaultPrint.rds")
 
     expect_equal_to_reference(print(pbcOverall$ContTable, printToggle = TRUE),
-                              "ref-ContTable_overallPrint")
+                              "ref-ContTable_overallPrint.rds")
 
     expect_equal_to_reference(print(pbcByTrtSex$ContTable, printToggle = TRUE),
-                              "ref-ContTable_2StrataVars")
+                              "ref-ContTable_2StrataVars.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, digits = 3, pDigits = 5, printToggle = TRUE),
-                              "ref-ContTable_digits")
+                              "ref-ContTable_digits.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, test = FALSE, printToggle = TRUE),
-                              "ref-ContTable_noTests")
+                              "ref-ContTable_noTests.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, nonnormal = nonnormalVars, exact = exactVars, printToggle = TRUE),
-                              "ref-ContTable_nonnormal_exact")
+                              "ref-ContTable_nonnormal_exact.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
-                              "ref-ContTable_nonnormal_minMax")
+                              "ref-ContTable_nonnormal_minMax.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, noSpaces = TRUE, printToggle = TRUE),
-                              "ref-ContTable_noSpaces")
+                              "ref-ContTable_noSpaces.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, explain = FALSE, printToggle = TRUE),
-                              "ref-ContTable_explain")
+                              "ref-ContTable_explain.rds")
 
     expect_equal_to_reference(print(pbcByTrt$ContTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE),
-                              "ref-ContTable_noSpaces_showAllLevels_quote")
-    
+                              "ref-ContTable_noSpaces_showAllLevels_quote.rds")
+
     expect_equal_to_reference(print(pbcByTrt_addOverall$ContTable, noSpaces = TRUE, showAllLevels = TRUE, quote = TRUE, printToggle = TRUE, smd = TRUE),
-                              "ref-ContTable_noSpaces_showAllLevels_quote_addOverall")
-    
+                              "ref-ContTable_noSpaces_showAllLevels_quote_addOverall.rds")
+
     expect_equal_to_reference(print(pbcByTrtSex_addOverall$ContTable, printToggle = TRUE),
-                              "ref-ContTable_2StrataVars_addOverall")
+                              "ref-ContTable_2StrataVars_addOverall.rds")
+})
+
+
+###
+### Regression tests for print.TableOne via git
+################################################################################
+
+test_that("printing of a TableOne object does not regress (via git)", {
+
+    ## Expectations
+    expect_known_output(print(pbcByTrt, printToggle = TRUE),
+                        "ref-TableOne_defaultPrint.txt")
+
+    expect_known_output(print(pbcOverall, printToggle = TRUE),
+                        "ref-TableOne_overallPrint.txt")
+
+    expect_known_output(print(pbcInclNa, printToggle = TRUE),
+                        "ref-TableOne_IncludeNA.txt")
+
+    expect_known_output(print(pbcByTrtSex, printToggle = TRUE),
+                        "ref-TableOne_2StrataVars.txt")
+
+    expect_known_output(print(pbcByTrt, catDigits = 3, contDigits = 4, pDigits = 5, printToggle = TRUE),
+                        "ref-TableOne_digits.txt")
+
+    expect_known_output(print(pbcByTrt, test = FALSE, printToggle = TRUE),
+                        "ref-TableOne_noTests.txt")
+
+    expect_known_output(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, printToggle = TRUE),
+                        "ref-TableOne_nonnormal_exact.txt")
+
+    expect_known_output(print(pbcByTrt, nonnormal = nonnormalVars, minMax = TRUE, printToggle = TRUE),
+                        "ref-TableOne_nonnormal_minMax.txt")
+
+    expect_known_output(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, printToggle = TRUE),
+                        "ref-TableOne_noSpaces.txt")
+
+    expect_known_output(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, showAllLevels = TRUE, printToggle = TRUE),
+                        "ref-TableOne_showAllLevels.txt")
+
+    expect_known_output(print(pbcByTrt, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE),
+                        "ref-TableOne_noSpaces_showAllLevels_quote.txt")
+
+    expect_known_output(print(pbcContOnlyByTrtSex),
+                        "ref-TableOne_ContOnly.txt")
+
+    expect_known_output(print(pbcCatOnlyByTrtSex),
+                        "ref-TableOne_CatOnly.txt")
+
+    ## Add Overall Tests always with smd and tests
+    expect_known_output(print(pbcByTrt_addOverall, nonnormal = nonnormalVars, exact = exactVars, noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE, printToggle = TRUE, smd = TRUE, test = TRUE),
+                        "ref-TableOne_noSpaces_showAllLevels_quote_addOverall.txt")
+
+    expect_known_output(print(pbcByTrtSex_addOverall, printToggle = TRUE, smd = TRUE, test = TRUE),
+                        "ref-TableOne_2StrataVars_addOverall.txt")
+
+    expect_known_output(print(pbcContOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
+                        "ref-TableOne_ContOnly_addOverall.txt")
+
+    expect_known_output(print(pbcCatOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE),
+                        "ref-TableOne_CatOnly_addOverall.txt")
+
+    ## Regression tests for formatOptions always with smd and tests
+    expect_known_output(
+        print(pbcByTrt_addOverall, nonnormal = nonnormalVars, exact = exactVars,
+              noSpaces = TRUE, showAllLevels = FALSE, quote = TRUE,
+              printToggle = TRUE, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_noSpaces_showAllLevels_quote_addOverall_formatOptions.txt")
+
+    expect_known_output(
+        print(pbcByTrtSex_addOverall, printToggle = TRUE, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_2StrataVars_addOverall_formatOptions.txt")
+
+    expect_known_output(
+        print(pbcContOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_ContOnly_addOverall_formatOptions.txt")
+
+    expect_known_output(
+        print(pbcCatOnlyByTrtSex_addOverall, smd = TRUE, test = TRUE,
+              formatOptions = list(big.mark = ",", big.interval = 2, decimal.mark = "D")),
+        "ref-TableOne_CatOnly_addOverall_formatOptions.txt")
 })
 
 
@@ -493,7 +604,7 @@ test_that("summary method works without errors", {
                   "### Summary of continuous variables ###")
     summary(pbcCatOnlyByTrtSex)
     expect_output(summary(pbcCatOnlyByTrtSex), "3 vs 4")
-    
+
     ## AddOverall Test
     expect_output(summary(pbcByTrtSex_addOverall), "trt:sex: Overall")
     expect_output(summary(pbcByTrtSex_addOverall), "trt:sex: 1:f")

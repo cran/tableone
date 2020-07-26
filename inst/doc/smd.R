@@ -53,6 +53,7 @@ addmargins(table(ExtractSmd(tabUnmatched) > 0.1))
 
 ## -------------------------------------------------------------------------------------------------------------------------------
 
+rhc$swang1 <- factor(rhc$swang1, levels = c("No RHC", "RHC"))
 ## Fit model
 psModel <- glm(formula = swang1 ~ age + sex + race + edu + income + ninsclas +
                          cat1 + das2d3pc + dnr1 + ca + surv2md1 + aps1 + scoma1 +
@@ -119,11 +120,27 @@ addmargins(table(ExtractSmd(tabWeighted) > 0.1))
 
 ## -------------------------------------------------------------------------------------------------------------------------------
 
+## Overlap weight
+rhc$ow <- (rhc$pAssign * (1 - rhc$pAssign)) / rhc$pAssign
+## Weighted data
+rhcSvyOw <- svydesign(ids = ~ 1, data = rhc, weights = ~ ow)
+
+## Construct a table (This is a bit slow.)
+tabWeightedOw <- svyCreateTableOne(vars = vars, strata = "swang1", data = rhcSvyOw, test = FALSE)
+## Show table with SMD
+print(tabWeightedOw, smd = TRUE)
+## Count covariates with important imbalance
+addmargins(table(ExtractSmd(tabWeightedOw) > 0.1))
+
+
+## -------------------------------------------------------------------------------------------------------------------------------
+
 ## Construct a data frame containing variable name and SMD from all methods
-dataPlot <- data.frame(variable  = names(ExtractSmd(tabUnmatched)),
-                       Unmatched = ExtractSmd(tabUnmatched),
-                       Matched   = ExtractSmd(tabMatched),
-                       Weighted  = ExtractSmd(tabWeighted))
+dataPlot <- data.frame(variable  = rownames(ExtractSmd(tabUnmatched)),
+                       Unmatched = as.numeric(ExtractSmd(tabUnmatched)),
+                       Matched   = as.numeric(ExtractSmd(tabMatched)),
+                       Weighted  = as.numeric(ExtractSmd(tabWeighted)),
+                       WeightedOw = as.numeric(ExtractSmd(tabWeightedOw)))
 
 ## Create long-format data for ggplot2
 dataPlotMelt <- melt(data          = dataPlot,
@@ -139,13 +156,13 @@ dataPlotMelt$variable <- factor(dataPlotMelt$variable,
                                 levels = varNames)
 
 ## Plot using ggplot2
-ggplot(data = dataPlotMelt, mapping = aes(x = variable, y = SMD,
-                                          group = Method, color = Method)) +
-geom_line() +
-geom_point() +
-geom_hline(yintercept = 0.1, color = "black", size = 0.1) +
-coord_flip() +
-theme_bw() + theme(legend.key = element_blank())
+ggplot(data = dataPlotMelt,
+       mapping = aes(x = variable, y = SMD, group = Method, color = Method)) +
+    geom_line() +
+    geom_point() +
+    geom_hline(yintercept = 0.1, color = "black", size = 0.1) +
+    coord_flip() +
+    theme_bw() + theme(legend.key = element_blank())
 
 
 ## -------------------------------------------------------------------------------------------------------------------------------
@@ -153,11 +170,12 @@ theme_bw() + theme(legend.key = element_blank())
 ## Column bind tables
 resCombo <- cbind(print(tabUnmatched, printToggle = FALSE),
                   print(tabMatched,   printToggle = FALSE),
-                  print(tabWeighted,  printToggle = FALSE))
+                  print(tabWeighted,  printToggle = FALSE),
+                  print(tabWeightedOw,  printToggle = FALSE))
 
 ## Add group name row, and rewrite column names
 resCombo <- rbind(Group = rep(c("No RHC","RHC"), 3), resCombo)
-colnames(resCombo) <- c("Unmatched","","Matched","","Weighted","")
+colnames(resCombo) <- c("Unmatched","","Matched","","MW","","OW","")
 print(resCombo, quote = FALSE)
 
 

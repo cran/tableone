@@ -18,6 +18,7 @@
   insertLevel = FALSE,
   test = TRUE,
   smd = FALSE,
+  formatOptions = list(scientific = FALSE),
   ...
 )
 }
@@ -48,6 +49,8 @@
 
 \item{smd}{Whether to show standardized mean differences. FALSE by default. If there are more than one contrasts, the average of all possible standardized mean differences is shown. For individual contrasts, use \code{summary}.}
 
+\item{formatOptions}{A list of options, which will be passed to \code{\link[base]{format}}. Can be used to modify the \code{big.mark}, \code{decimal.mark}, \code{big.interval} etc. The default is \code{list(scientific = FALSE)}. The options digits, nsmall, justify and trim are not available. (Experimental)}
+
 \item{...}{For compatibility with generic. Ignored.}
 }
 \value{
@@ -65,5 +68,5 @@ A matrix object containing what you see is also invisibly returned. This can be 
 \code{\link{svyCreateTableOne}}, \code{\link{svyCreateCatTable}}, \code{\link{summary.svyCatTable}}
 }
 \author{
-Kazuki Yoshida
+Kazuki Yoshida, Alexander Bartel
 }
