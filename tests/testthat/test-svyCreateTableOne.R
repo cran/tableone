@@ -17,6 +17,19 @@ library(survey)
 
 
 ###
+### Use oldsvyquantile when available
+################################################################################
+
+## 2020-07-30 via Thomas Lumley
+## survey::svyquantile rewritten for survey 4.1
+## To get the old behaviour you can simply call survey::oldsvyquantile() instead.
+try_oldsvyquantile <- try(getFromNamespace(x = "oldsvyquantile", ns = "survey"))
+if (is.function(try_oldsvyquantile)) {
+    svyquantile <- survey::oldsvyquantile
+}
+
+
+###
 ### Context (1 for each file)
 ################################################################################
 context("Unit tests for svy* user functions")
@@ -715,7 +728,7 @@ test_that("svyrep.design is allowed", {
 
 ###  Replication weight data
     ## http://www.ats.ucla.edu/stat/stata/library/replicate_weights.htm
-    ## http://r-survey.r-forge.r-project.org/survey/html/svrepdesign.html
+    ## https://r-survey.r-forge.r-project.org/survey/html/svrepdesign.html
 
     ## Survival in cardiac arrest (in survey)
     data(scd)

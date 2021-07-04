@@ -1,13 +1,13 @@
 ## ---- message = FALSE, tidy = FALSE, echo = F-----------------------------------------------------------------------------------
 ## Create a header using devtools::use_vignette("my-vignette")
-## knitr configuration: http://yihui.name/knitr/options#chunk_options
+## knitr configuration: https://yihui.name/knitr/options#chunk_options
 library(knitr)
 showMessage <- FALSE
 showWarning <- FALSE
 set_alias(w = "fig.width", h = "fig.height", res = "results")
 opts_chunk$set(comment = "", error= TRUE, warning = showWarning, message = showMessage,
                tidy = FALSE, cache = F, echo = T,
-               fig.width = 10, fig.height = 10, dev.args = list(family = "sans"))
+               fig.width = 10, fig.height = 10)
 
 ## R configuration
 options(width = 130, scipen = 5)
@@ -29,7 +29,7 @@ library(ggplot2)
 ## -------------------------------------------------------------------------------------------------------------------------------
 
 ## Right heart cath dataset
-rhc <- read.csv("http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/rhc.csv")
+rhc <- read.csv("https://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/rhc.csv")
 
 
 ## -------------------------------------------------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ resCombo <- cbind(print(tabUnmatched, printToggle = FALSE),
                   print(tabWeightedOw,  printToggle = FALSE))
 
 ## Add group name row, and rewrite column names
-resCombo <- rbind(Group = rep(c("No RHC","RHC"), 3), resCombo)
+resCombo <- rbind(Group = rep(c("No RHC","RHC"), 4), resCombo)
 colnames(resCombo) <- c("Unmatched","","Matched","","MW","","OW","")
 print(resCombo, quote = FALSE)
 
