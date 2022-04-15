@@ -1,3 +1,20 @@
+tableone 0.13.2 (2022-04-15)
+----------------------------------------------------------------
+
+TEMPORARY BUG FIX
+
+* Avoid calling && and || on a vector of length > 1 by disabling
+  tests that call the 
+
+
+tableone 0.13.1 (2022-03-27)
+----------------------------------------------------------------
+
+BUG FIX
+
+* Fix some issues in the SMD vignette (@tszberkowitz)
+
+
 tableone 0.13.0 (2021-07-04)
 ----------------------------------------------------------------
 

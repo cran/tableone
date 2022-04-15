@@ -29,7 +29,7 @@ library(ggplot2)
 ## -------------------------------------------------------------------------------------------------------------------------------
 
 ## Right heart cath dataset
-rhc <- read.csv("https://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/rhc.csv")
+rhc <- read.csv("https://biostat.app.vumc.org/wiki/pub/Main/DataSets/rhc.csv")
 
 
 ## -------------------------------------------------------------------------------------------------------------------------------
@@ -136,10 +136,10 @@ addmargins(table(ExtractSmd(tabWeightedOw) > 0.1))
 ## -------------------------------------------------------------------------------------------------------------------------------
 
 ## Construct a data frame containing variable name and SMD from all methods
-dataPlot <- data.frame(variable  = rownames(ExtractSmd(tabUnmatched)),
-                       Unmatched = as.numeric(ExtractSmd(tabUnmatched)),
-                       Matched   = as.numeric(ExtractSmd(tabMatched)),
-                       Weighted  = as.numeric(ExtractSmd(tabWeighted)),
+dataPlot <- data.frame(variable   = rownames(ExtractSmd(tabUnmatched)),
+                       Unmatched  = as.numeric(ExtractSmd(tabUnmatched)),
+                       Matched    = as.numeric(ExtractSmd(tabMatched)),
+                       Weighted   = as.numeric(ExtractSmd(tabWeighted)),
                        WeightedOw = as.numeric(ExtractSmd(tabWeightedOw)))
 
 ## Create long-format data for ggplot2
@@ -162,16 +162,17 @@ ggplot(data = dataPlotMelt,
     geom_point() +
     geom_hline(yintercept = 0.1, color = "black", size = 0.1) +
     coord_flip() +
-    theme_bw() + theme(legend.key = element_blank())
+    theme_bw() +
+    theme(legend.key = element_blank())
 
 
 ## -------------------------------------------------------------------------------------------------------------------------------
 
 ## Column bind tables
-resCombo <- cbind(print(tabUnmatched, printToggle = FALSE),
-                  print(tabMatched,   printToggle = FALSE),
-                  print(tabWeighted,  printToggle = FALSE),
-                  print(tabWeightedOw,  printToggle = FALSE))
+resCombo <- cbind(print(tabUnmatched,  printToggle = FALSE),
+                  print(tabMatched,    printToggle = FALSE),
+                  print(tabWeighted,   printToggle = FALSE),
+                  print(tabWeightedOw, printToggle = FALSE))
 
 ## Add group name row, and rewrite column names
 resCombo <- rbind(Group = rep(c("No RHC","RHC"), 4), resCombo)
@@ -181,7 +182,7 @@ print(resCombo, quote = FALSE)
 
 ## -------------------------------------------------------------------------------------------------------------------------------
 
-## Unmatched model (unadjsuted)
+## Unmatched model (unadjusted)
 glmUnmatched <- glm(formula = (death == "Yes") ~ swang1,
                     family  = binomial(link = "logit"),
                     data    = rhc)
@@ -192,7 +193,7 @@ glmMatched <- glm(formula = (death == "Yes") ~ swang1,
 ## Weighted model
 glmWeighted <- svyglm(formula = (death == "Yes") ~ swang1,
                       family  = binomial(link = "logit"),
-                      design    = rhcSvy)
+                      design  = rhcSvy)
 
 ## Show results together
 resTogether <- list(Unmatched = ShowRegTable(glmUnmatched, printToggle = FALSE),
